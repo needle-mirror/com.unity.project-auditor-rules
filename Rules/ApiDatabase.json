@@ -28,7 +28,8 @@
         "id": "PAC0003",
         "type": "UnityEngine.GeometryUtility",
         "method": "CalculateFrustumPlanes",
-        "areas": ["Memory", "MemoryIgnoreVoidReturn"],
+        "returnType": "!void",
+        "areas": ["Memory"],
         "description": "Some versions of <b>GeometryUtility.CalculateFrustumPlanes()</b> allocate managed memory.",
         "recommendation": "Ensure that you use the <b>CalculateFrustumPlanes(Matrix4x4 worldToProjectionMatrix, Plane[] planes)</b> version of this API method, in order to be able to pass a pre-allocated Array of Planes."
     },
@@ -212,7 +213,8 @@
         "id": "PAC0026",
         "type": "UnityEngine.Component",
         "method": "GetComponentsInChildren",
-        "areas": ["Memory", "MemoryIgnoreVoidReturn"],
+        "returnType": "!void",
+        "areas": ["Memory"],
         "description": "<b>Component.GetComponentsInChildren()</b> allocates managed memory.",
         "recommendation": "Ensure you are using one of the versions of <b>GameObject.GetComponentsInChildren()</b> which accepts a List<T> as a parameter and populates it with the components it finds."
     },
@@ -220,7 +222,8 @@
         "id": "PAC0027",
         "type": "UnityEngine.Component",
         "method": "GetComponentsInParent",
-        "areas": ["Memory", "MemoryIgnoreVoidReturn"],
+        "returnType": "!void",
+        "areas": ["Memory"],
         "description": "<b>Component.GetComponentsInParent()</b> allocates managed memory.",
         "recommendation": "Ensure you are using one of the versions of <b>GameObject.GetComponentsInParent()</b> which accepts a List<T> as a parameter and populates it with the components it finds."
     },
@@ -228,7 +231,8 @@
         "id": "PAC0028",
         "type": "UnityEngine.GameObject",
         "method": "GetComponentsInChildren",
-        "areas": ["Memory", "MemoryIgnoreVoidReturn"],
+        "returnType": "!void",
+        "areas": ["Memory"],
         "description": "Some versions of <b>GameObject.GetComponentsInChildren()</b> allocate managed memory.",
         "recommendation": "Ensure you are using one of the versions of <b>GameObject.GetComponentsInChildren()</b> which accepts a List<T> as a parameter and populates it with the components it finds."
     },
@@ -236,7 +240,8 @@
         "id": "PAC0029",
         "type": "UnityEngine.GameObject",
         "method": "GetComponentsInParent",
-        "areas": ["Memory", "MemoryIgnoreVoidReturn"],
+        "returnType": "!void",
+        "areas": ["Memory"],
         "description": "Some versions of <b>GameObject.GetComponentsInParent()</b> allocate managed memory.",
         "recommendation": "Ensure you are using one of the versions of <b>GameObject.GetComponentsInParent()</b> which accepts a List<T> as a parameter and populates it with the components it finds."
     },
