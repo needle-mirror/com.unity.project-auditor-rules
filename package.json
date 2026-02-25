@@ -1,6 +1,6 @@
 {
   "name": "com.unity.project-auditor-rules",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "displayName": "Project Auditor Rules",
   "unity": "2021.3",
   "description": "Project Auditor is a static analysis tool that analyzes assets, settings, and scripts inside Unity projects. Project Auditor lives inside the Unity Editor as a module, and uses the rules in this package to provide suggestions for improvement.",
@@ -10,18 +10,18 @@
   ],
   "dependencies": {},
   "relatedPackages": {
-    "com.unity.project-auditor-rules.tests": "1.0.1"
+    "com.unity.project-auditor-rules.tests": "1.0.2"
   },
   "_upm": {
-    "changelog": "# Changed\n* Removed MemoryIgnoreVoidReturn area, in favor of using a new returnType entry for filtering based on return type."
+    "changelog": "# Added\n* Added a database of all Obsolete Unity API. Newer versions of Project Auditor will be able to use this to help with upgrades.\n\n# Fixed\n* Fixed various issues with the Domain Reload Roslyn Analyzer. It now detects more variable reset scenarios, and disallows multiple ResetInitializeOnLoad attributes."
   },
   "upmCi": {
-    "footprint": "47f50fe8aac3aee2ae7f818cc70316deccaa538a"
+    "footprint": "56f0e7c2c3ee8a6e8bc57e4477fbd7b7253cda9c"
   },
   "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.project-auditor-rules@1.0/manual/index.html",
   "repository": {
     "url": "https://github.cds.internal.unity3d.com/unity/ProjectAuditorRules.git",
     "type": "git",
-    "revision": "7f91abea9cec078fb5ef321f767714441259f557"
+    "revision": "eb09cd1bf9ce685aea4af5b285987eaefe696277"
   }
 }
