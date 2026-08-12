@@ -1,0 +1,31 @@
+{
+    "name": "ProjectAuditorRules.ModuleAnalyzers",
+    "rootNamespace": "",
+    "references": [
+        "Unity.ProjectAuditor.Editor",
+        "Unity.ProjectAuditor.Editor.Utils"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "HAS_PROJECT_AUDITOR"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.project-auditor",
+            "define": "HAS_PROJECT_AUDITOR"
+        },
+        {
+            "name": "Unity",
+            "expression": "6000.5",
+            "define": "HAS_PROJECT_AUDITOR"
+        }
+    ],
+    "noEngineReferences": false
+}

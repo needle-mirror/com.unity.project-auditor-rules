@@ -1,0 +1,10 @@
+[
+  {
+    "name": "System.Reflection",
+    "recommendation": "Reflection is slow and allocates; cache the MemberInfo/Type lookups outside frequently-updated code, or replace them with precomputed delegates or source generators. Use the TypeCache if possible"
+  },
+  {
+    "name": "System.Linq",
+    "recommendation": "LINQ operators allocate enumerators and delegates each time they run; prefer explicit loops in frequently-updated code"
+  }
+]

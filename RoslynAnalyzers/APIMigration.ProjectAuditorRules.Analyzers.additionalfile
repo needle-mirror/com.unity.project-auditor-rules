@@ -1,0 +1,314 @@
+[
+  {
+    "name": "UnityEngine.Input.GetAxis",
+    "recommendation": "Read an InputAction's value with action.ReadValue<T>(), obtaining the action via InputSystem.actions.FindAction(\"name\")",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.GetAxisRaw",
+    "recommendation": "Read an InputAction's unprocessed value with action.ReadUnprocessedValue()",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.GetButton",
+    "recommendation": "Use action.IsPressed() on an InputAction obtained via InputSystem.actions.FindAction(\"name\")",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.GetButtonDown",
+    "recommendation": "Use action.WasPressedThisFrame() on an InputAction obtained via InputSystem.actions.FindAction(\"name\")",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.GetButtonUp",
+    "recommendation": "Use action.WasReleasedThisFrame() on an InputAction obtained via InputSystem.actions.FindAction(\"name\")",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.GetKey",
+    "recommendation": "Use the matching Keyboard.current key control, e.g. Keyboard.current.spaceKey.isPressed",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.GetKeyDown",
+    "recommendation": "Use the matching Keyboard.current key control, e.g. Keyboard.current.spaceKey.wasPressedThisFrame",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.GetKeyUp",
+    "recommendation": "Use the matching Keyboard.current key control, e.g. Keyboard.current.spaceKey.wasReleasedThisFrame",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.GetMouseButton",
+    "recommendation": "Use Mouse.current.leftButton/rightButton/middleButton.isPressed",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.GetMouseButtonDown",
+    "recommendation": "Use Mouse.current.leftButton/rightButton/middleButton.wasPressedThisFrame",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.GetMouseButtonUp",
+    "recommendation": "Use Mouse.current.leftButton/rightButton/middleButton.wasReleasedThisFrame",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.GetTouch",
+    "recommendation": "Use EnhancedTouch.Touch.activeTouches[i] after calling EnhancedTouch.Enable()",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.GetJoystickNames",
+    "recommendation": "Enumerate connected devices via the Input System device APIs; there is no direct equivalent",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.IsJoystickPreconfigured",
+    "recommendation": "Not required with the Input System",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.ResetInputAxes",
+    "recommendation": "There is no direct equivalent in the Input System",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.GetAccelerationEvent",
+    "recommendation": "Read Accelerometer.current; see the accelerometer sampling documentation",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.GetPenEvent",
+    "recommendation": "Use Pen.current",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.GetLastPenContactEvent",
+    "recommendation": "Use Pen.current",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.ResetPenEvents",
+    "recommendation": "Use Pen.current",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.ClearLastPenContactEvent",
+    "recommendation": "Use Pen.current",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.mousePosition",
+    "recommendation": "Use Mouse.current.position.ReadValue()",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.mousePresent",
+    "recommendation": "Check Mouse.current != null",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.anyKey",
+    "recommendation": "Subscribe to InputSystem.onAnyButtonPress",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.anyKeyDown",
+    "recommendation": "Use Keyboard.current.anyKey.wasUpdatedThisFrame",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.inputString",
+    "recommendation": "Subscribe to Keyboard.onTextInput",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.compositionCursorPos",
+    "recommendation": "Use Keyboard.current.SetIMECursorPosition(Vector2)",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.compositionString",
+    "recommendation": "Subscribe to Keyboard.onIMECompositionChange",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.imeCompositionMode",
+    "recommendation": "Use Keyboard.current.SetIMEEnabled(bool)",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.imeIsSelected",
+    "recommendation": "Use Keyboard.current.imeSelected",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.touchCount",
+    "recommendation": "Use EnhancedTouch.Touch.activeTouches.Count after calling EnhancedTouch.Enable()",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.touches",
+    "recommendation": "Use EnhancedTouch.Touch.activeTouches after calling EnhancedTouch.Enable()",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.touchSupported",
+    "recommendation": "Check Touchscreen.current != null",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.multiTouchEnabled",
+    "recommendation": "There is no direct equivalent in the Input System yet",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.simulateMouseWithTouches",
+    "recommendation": "There is no direct equivalent in the Input System yet",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.stylusTouchSupported",
+    "recommendation": "There is no direct equivalent in the Input System yet",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.touchPressureSupported",
+    "recommendation": "There is no direct equivalent in the Input System yet",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.backButtonLeavesApp",
+    "recommendation": "There is no direct equivalent in the Input System yet",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.acceleration",
+    "recommendation": "Use Accelerometer.current.acceleration.ReadValue()",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.accelerationEventCount",
+    "recommendation": "See the accelerometer sampling documentation",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.accelerationEvents",
+    "recommendation": "See the accelerometer sampling documentation",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.compass",
+    "recommendation": "There is no direct equivalent in the Input System yet",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.compensateSensors",
+    "recommendation": "Use InputSystem.settings.compensateForScreenOrientation",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.deviceOrientation",
+    "recommendation": "There is no direct equivalent in the Input System yet",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.gyro",
+    "recommendation": "The legacy Gyroscope is split into Gyroscope, GravitySensor, AttitudeSensor, Accelerometer and LinearAccelerationSensor",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Input.location",
+    "recommendation": "There is no direct equivalent in the Input System yet",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Gyroscope.attitude",
+    "recommendation": "Use AttitudeSensor.current.orientation.ReadValue()",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Gyroscope.enabled",
+    "recommendation": "Read Gyroscope.current.enabled; enable or disable with InputSystem.EnableDevice/DisableDevice(Gyroscope.current)",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Gyroscope.gravity",
+    "recommendation": "Use GravitySensor.current.gravity.ReadValue()",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Gyroscope.rotationRate",
+    "recommendation": "Use Gyroscope.current.angularVelocity.ReadValue()",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Gyroscope.rotationRateUnbiased",
+    "recommendation": "There is no direct equivalent in the Input System yet",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Gyroscope.updateInterval",
+    "recommendation": "Use Sensor.samplingFrequency (Hz = 1 / seconds)",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  },
+  {
+    "name": "UnityEngine.Gyroscope.userAcceleration",
+    "recommendation": "Use LinearAccelerationSensor.current.acceleration.ReadValue()",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
+    "minimumVersion": "6000.0"
+  }
+]

@@ -983,15 +983,6 @@
         "documentationUrl": "https://docs.unity3d.com/ScriptReference/HumanTrait.BoneName.html"
     },
     {
-        "id": "PAC0143",
-        "type": "UnityEngine.RuntimeAnimatorController",
-        "method": "animationClips",
-        "areas": ["Memory"],
-        "description": "The property <b>RuntimeAnimatorController.animationClips</b> allocates managed memory.",
-        "recommendation": "Try to avoid getting this property in frequently-updated code. Ideally, this property should only be used during initialisation, and the results should be cached if they need to be re-used.",
-        "documentationUrl": "https://docs.unity3d.com/ScriptReference/RuntimeAnimatorController-animationClips.html"
-    },
-    {
         "id": "PAC0144",
         "type": "UnityEngine.AssetBundleRequest",
         "method": "allAssets",
@@ -1419,6 +1410,7 @@
         "description": "The property <b>UIElements.UxmlAttributeDescription.obsoleteNames</b> allocates managed memory.",
         "recommendation": "Try to avoid getting this property in frequently-updated code. Ideally, this property should only be used during initialisation, and the results should be cached if they need to be re-used.",
         "minimumVersion": "2019.1",
+        "maximumVersion": "6000.5",
         "documentationUrl": "https://docs.unity3d.com/ScriptReference/UIElements.UxmlAttributeDescription-obsoleteNames.html"
     },
     {

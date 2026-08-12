@@ -1,8 +1,8 @@
 {
   "name": "com.unity.project-auditor-rules",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "displayName": "Project Auditor Rules",
-  "unity": "2021.3",
+  "unity": "6000.0",
   "description": "Project Auditor is a static analysis tool that analyzes assets, settings, and scripts inside Unity projects. Project Auditor lives inside the Unity Editor as a module, and uses the rules in this package to provide suggestions for improvement.",
   "keywords": [
     "performance",
@@ -10,18 +10,18 @@
   ],
   "dependencies": {},
   "relatedPackages": {
-    "com.unity.project-auditor-rules.tests": "1.0.3"
+    "com.unity.project-auditor-rules.tests": "2.0.0"
   },
   "_upm": {
-    "changelog": "# Fixed\n* Recognize Array.Clear as a valid reset method, and do not log delayCall issues in the Domain Reload Roslyn Analyzer."
+    "changelog": "# Changed\n* Raised the minimum supported Editor version to 6000.0.\n* Removed RoslynAnalyzer label from the Domain_Reload_Analyzer.dll so it does not get auto-included with normal Editor compilation.\n* Renamed ObsoleteDatabase.json to ObsoleteDatabase.gen.json to make it more clear that it is a generated file and should not be hand-edited.\n* Add Roslyn Analyzers so we can provide code issue detection directly from the package.\n* Migrate some analyzers from the built-in module out into the Rules package, so all rules can eventually be defined in this package.\n* PAA3001 has been removed. It used to report dependency problems as issues, but this is now covered in the improved dependency viewer starting in Unity 6.6.\n* Added PAS0036 to check Fast Enter Playmode settings in 6000.0 and newer.\n* Added a new check for modified registry packages.\n* Added a new check for 32-bit mesh issues created without an importer.\n\n# Fixed\n* Updated Graphics API checks to offer advice based on the preferred order of APIs, rather than simple presence.\n* Fixed precision in PAS0017 check: \"Time: Maximum Allowed Timestep is set to the default value\".\n* Fixed Audio Quick Fixers to avoid overwriting settings with defaults.\n* Build size analyzers now ignore meta files.\n* Fixed the managed stripping analyzer to include the Minimal level on all relevant platforms.\n* Ensure all Project Settings issues report a Location.\n* Audio checks weren't using the runtime size consistently.\ntrying to check an ios/android issue on switch.\n* Ensure texture Quick Fixers preserve the file extension.\n* Fix out of range texture read for 1xN textures.\n* Fix transparency percentage checking.\n* Ensure the Material Analyzer only reports each texture issue once, even if they have identical names."
   },
   "upmCi": {
-    "footprint": "72ff3a0ff9268aaa9bf9252681c22aedb93374b6"
+    "footprint": "4257d35e53cc4c286df3c44e1883147f9f9ec7c6"
   },
-  "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.project-auditor-rules@1.0/manual/index.html",
+  "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.project-auditor-rules@2.0/manual/index.html",
   "repository": {
     "url": "https://github.cds.internal.unity3d.com/unity/ProjectAuditorRules.git",
     "type": "git",
-    "revision": "f6bd9c60d06693e5c6d693de4c368a40ddae853d"
+    "revision": "d769e5a85bb10e7bc6629ba532de99ef17bbebf7"
   }
 }
