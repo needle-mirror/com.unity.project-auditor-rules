@@ -310,5 +310,107 @@
     "recommendation": "Use LinearAccelerationSensor.current.acceleration.ReadValue()",
     "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/corresponding-old-new-api.html",
     "minimumVersion": "6000.0"
+  },
+  {
+    "name": "System.AppDomain.GetAssemblies",
+    "recommendation": "Prefer <b>UnityEngine.Assemblies.CurrentAssemblies.GetLoadedAssemblies()</b>, which accounts for assemblies loaded and unloaded by code reloading",
+    "documentationUrl": "https://learn.microsoft.com/en-us/dotnet/api/system.appdomain.getassemblies",
+    "area": "MigrationToCoreCLR"
+  },
+  {
+    "name": "UnityEngine.Camera.AddCommandBuffer",
+    "recommendation": "<b>Camera.AddCommandBuffer()</b> attaches a CommandBuffer to a Built-in Render Pipeline <b>CameraEvent</b>. Reimplement the effect as a <b>ScriptableRendererFeature</b> with a custom <b>ScriptableRenderPass</b> in URP, instead of injecting CommandBuffers via Camera.AddCommandBuffer().",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html",
+    "area": "MigrationToURP"
+  },
+  {
+    "name": "UnityEngine.Camera.allowHDR",
+    "recommendation": "<b>Camera.allowHDR</b> has no effect under the Universal Render Pipeline, where HDR is controlled by the <b>HDR</b> option on the URP Asset and per-camera through <b>UniversalAdditionalCameraData</b>. Control HDR via the <b>HDR</b> option on the URP Asset, or per-camera through <b>camera.GetUniversalAdditionalCameraData()</b>, instead of setting Camera.allowHDR.",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html",
+    "area": "MigrationToURP"
+  },
+  {
+    "name": "UnityEngine.Camera.allowMSAA",
+    "recommendation": "<b>Camera.allowMSAA</b> has no effect under the Universal Render Pipeline, where MSAA is controlled by the <b>Anti Aliasing (MSAA)</b> setting on the URP Asset. Configure MSAA through the <b>Anti Aliasing (MSAA)</b> setting on the URP Asset instead of setting Camera.allowMSAA.",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html",
+    "area": "MigrationToURP"
+  },
+  {
+    "name": "UnityEngine.Camera.renderingPath",
+    "recommendation": "<b>Camera.renderingPath</b> has no effect under the Universal Render Pipeline, which selects its rendering path through the assigned <b>Renderer</b> on the URP Asset. Choose the rendering path by assigning the appropriate <b>Renderer</b> on the URP Asset instead of setting Camera.renderingPath.",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html",
+    "area": "MigrationToURP"
+  },
+  {
+    "name": "UnityEngine.Camera.depthTextureMode",
+    "recommendation": "<b>Camera.depthTextureMode</b> does not drive depth texture generation under the Universal Render Pipeline. Enable <b>Depth Texture</b> on the URP Asset, or per-camera through <b>UniversalAdditionalCameraData</b>, instead of setting Camera.depthTextureMode.",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html",
+    "area": "MigrationToURP"
+  },
+  {
+    "name": "UnityEngine.Camera.depth",
+    "recommendation": "<b>Camera.depth</b> controls how camera render outputs are ordered under the Built-in Render Pipeline. Review whether this camera relies on Depth-based ordering and, if so, use URP Camera Stacking — designate a <b>Base</b> camera and add the others as <b>Overlay</b> cameras on its <b>UniversalAdditionalCameraData</b> stack — instead of setting Camera.depth.",
+    "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html",
+    "area": "MigrationToURP"
+  },
+  {
+    "name": "System.Reflection.Assembly.Location",
+    "recommendation": "Use <b>Assembly.GetLoadedAssemblyPath()</b> (an extension method in the UnityEngine namespace) to obtain an assembly's path instead of Assembly.Location.",
+    "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html",
+    "area": "MigrationToCoreCLR"
+  },
+  {
+    "name": "System.Reflection.Assembly.LoadFile",
+    "recommendation": "Load assemblies through <b>CurrentAssemblies.LoadFromPath(string)</b> or <b>CurrentAssemblies.LoadFromBytes(byte[])</b> (in the UnityEngine.Assemblies namespace) instead of Assembly.LoadFile.",
+    "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html",
+    "area": "MigrationToCoreCLR"
+  },
+  {
+    "name": "System.Reflection.Assembly.LoadFrom",
+    "recommendation": "Load assemblies through <b>CurrentAssemblies.LoadFromPath(string)</b> or <b>CurrentAssemblies.LoadFromBytes(byte[])</b> (in the UnityEngine.Assemblies namespace) instead of Assembly.LoadFrom.",
+    "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html",
+    "area": "MigrationToCoreCLR"
+  },
+  {
+    "name": "System.AppDomain.DomainUnload",
+    "recommendation": "Subscribing to <b>AppDomain.DomainUnload</b> no longer reliably fires under the CoreCLR (.NET) scripting runtime, which does not unload the managed code space the way Mono does. Move cleanup that depends on it to the <b>[OnAssemblyUnloading]</b> lifecycle attribute instead.",
+    "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html",
+    "area": "MigrationToCoreCLR"
+  },
+  {
+    "name": "System.IntPtr.ToInt32",
+    "recommendation": "<b>IntPtr.ToInt32</b> can throw <b>OverflowException</b> under the CoreCLR (.NET) scripting runtime when the pointer value does not fit in a 32-bit integer, which can happen on 64-bit platforms. Verify that this conversion cannot overflow. Prefer <b>IntPtr.ToInt64()</b> or keep the value as an <b>IntPtr</b>, or catch <b>OverflowException</b> where a narrowing conversion is required.",
+    "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html",
+    "area": "MigrationToCoreCLR"
+  },
+  {
+    "name": "System.UIntPtr.ToUInt32",
+    "recommendation": "<b>UIntPtr.ToUInt32</b> can throw <b>OverflowException</b> under the CoreCLR (.NET) scripting runtime when the pointer value does not fit in a 32-bit unsigned integer, which can happen on 64-bit platforms.. Verify that this conversion cannot overflow. Prefer <b>UIntPtr.ToUInt64()</b> or keep the value as a <b>UIntPtr</b>, or catch <b>OverflowException</b> where a narrowing conversion is required.",
+    "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html",
+    "area": "MigrationToCoreCLR"
+  },
+  {
+    "name": "System.Text.Encoding.GetEncoding",
+    "recommendation": "<b>Encoding.GetEncoding</b> can throw <b>NotSupportedException</b> under the CoreCLR (.NET) scripting runtime, which registers fewer code pages by default than the Mono scripting runtime did. Requesting an uncommon code page such as Windows-1252 fails unless its encoding provider has been registered. Prefer a built-in encoding such as <b>Encoding.UTF8</b> where possible. If a code-page encoding is required, register the provider once at startup with <b>Encoding.RegisterProvider(CodePagesEncodingProvider.Instance)</b>.",
+    "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html",
+    "area": "MigrationToCoreCLR"
+  },
+  {
+    "name": "System.Buffers.ArrayPool<T>.Return",
+    "recommendation": "Returning a buffer to <b>ArrayPool</b> without clearing it leaves any object references stored in the array alive, which can keep those objects from being collected and interfere with code reloading under the CoreCLR (.NET) scripting runtime. Pass <b>clearArray: true</b> to <b>ArrayPool.Return</b>, or clear the buffer yourself before returning it, whenever the array holds references to managed objects.",
+    "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html",
+    "area": "MigrationToCoreCLR"
+  },
+  {
+    "name": "System.AppDomain.CreateDomain",
+    "recommendation": "Remove use of additional <b>AppDomain</b> instances. Isolate code with separate processes or an <b>AssemblyLoadContext</b> instead.",
+    "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html",
+    "area": "MigrationToCoreCLR"
+  },
+  {
+    "name": "System.Threading.Thread.Abort",
+    "recommendation": "Use cooperative cancellation with a <b>CancellationToken</b> to stop background work instead of <b>Thread.Abort</b>.",
+    "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html",
+    "area": "MigrationToCoreCLR"
   }
 ]

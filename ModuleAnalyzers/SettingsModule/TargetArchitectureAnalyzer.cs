@@ -11,6 +11,7 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
     {
         internal const string PAS0003 = nameof(PAS0003);
         internal const string PAS0004 = nameof(PAS0004);
+        internal const string PAS0005 = nameof(PAS0005);
 
         static readonly Descriptor k_DescriptorIOS = new Descriptor(
             PAS0003,
@@ -40,23 +41,52 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
 #endif
         };
 
+        static readonly Descriptor k_DescriptorAndroidX86_64 = new Descriptor(
+            PAS0005,
+            "Player (Android): x86-64 target architecture is selected",
+            Areas.Upgrade,
+            "In the Android Player Settings, the <b>x86-64</b> target architecture is selected. Unity 6.5 removes support for the Android x86-64 build target, so this option will no longer be available.",
+            "Deselect <b>x86-64</b> under <b>Target Architectures</b> in <b>Project Settings > Player > Android</b>.")
+        {
+            DefaultSeverity = Severity.Major,
+#if UNITY_6000_4_OR_NEWER
+            Platforms = new SerializableEnum<BuildTarget>[] { BuildTarget.Android }
+#else
+            Platforms = new[] { BuildTarget.Android }
+#endif
+        };
+
         public override void Initialize(Action<Descriptor> registerDescriptor)
         {
             registerDescriptor(k_DescriptorIOS);
             registerDescriptor(k_DescriptorAndroid);
+            registerDescriptor(k_DescriptorAndroidX86_64);
         }
 
         public override IEnumerable<ReportItem> Analyze(SettingsAnalysisContext context)
         {
             // PlayerSettings.GetArchitecture returns an integer value associated with the architecture of a BuildTargetPlatformGroup. 0 - None, 1 - ARM64, 2 - Universal.
             if (k_DescriptorIOS.IsSupported(context.Params) && PlayerSettings.GetArchitecture(NamedBuildTarget.FromBuildTargetGroup(BuildTargetGroup.iOS)) == 2)
+            {
                 yield return context.CreateIssue(IssueCategory.ProjectSetting, k_DescriptorIOS.Id)
                     .WithLocation("Project/Player");
+            }
 
             if (k_DescriptorAndroid.IsSupported(context.Params) && (PlayerSettings.Android.targetArchitectures & AndroidArchitecture.ARMv7) != 0 &&
                 (PlayerSettings.Android.targetArchitectures & AndroidArchitecture.ARM64) != 0)
+            {
                 yield return context.CreateIssue(IssueCategory.ProjectSetting, k_DescriptorAndroid.Id)
                     .WithLocation("Project/Player");
+            }
+
+#pragma warning disable CS0618
+            if (k_DescriptorAndroidX86_64.IsSupported(context.Params) && (PlayerSettings.Android.targetArchitectures & AndroidArchitecture.X86_64) != 0)
+            {
+                yield return context.CreateIssue(IssueCategory.ProjectSetting, k_DescriptorAndroidX86_64.Id)
+                    .WithLocation("Project/Player")
+                    .WithUpgradeProperties("6000.5", null, null);
+            }
+#pragma warning restore CS0618
         }
     }
 }

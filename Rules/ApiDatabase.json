@@ -1402,17 +1402,17 @@
         "recommendation": "Try to avoid getting this property in frequently-updated code. Ideally, this property should only be used during initialisation, and the results should be cached if they need to be re-used.",
         "documentationUrl": "https://docs.unity3d.com/ScriptReference/Tilemaps.TileAnimationData-animatedSprites.html"
     },
-    {
-        "id": "PAC0191",
-        "type": "UnityEngine.UIElements.UxmlAttributeDescription",
-        "method": "obsoleteNames",
-        "areas": ["Memory"],
-        "description": "The property <b>UIElements.UxmlAttributeDescription.obsoleteNames</b> allocates managed memory.",
-        "recommendation": "Try to avoid getting this property in frequently-updated code. Ideally, this property should only be used during initialisation, and the results should be cached if they need to be re-used.",
-        "minimumVersion": "2019.1",
-        "maximumVersion": "6000.5",
-        "documentationUrl": "https://docs.unity3d.com/ScriptReference/UIElements.UxmlAttributeDescription-obsoleteNames.html"
-    },
+  {
+    "id": "PAC0191",
+    "type": "UnityEngine.UIElements.UxmlAttributeDescription",
+    "method": "obsoleteNames",
+    "areas": [ "Memory" ],
+    "description": "The property <b>UIElements.UxmlAttributeDescription.obsoleteNames</b> allocates managed memory.",
+    "recommendation": "Try to avoid getting this property in frequently-updated code. Ideally, this property should only be used during initialisation, and the results should be cached if they need to be re-used.",
+    "minimumVersion": "2019.1",
+    "maximumVersion": "6000.5",
+    "documentationUrl": "https://docs.unity3d.com/6000.5/Documentation/ScriptReference/UIElements.UxmlAttributeDescription-obsoleteNames.html"
+  },
     {
         "id": "PAC0200",
         "type": "UnityEngine.Networking.IMultipartFormSection",
@@ -1638,9 +1638,9 @@
       "id": "PAC1004",
       "type": "System.AppDomain",
       "method": "GetAssemblies",
-      "areas": ["CPU"],
+      "areas": [ "CPU", "MigrationToCoreCLR" ],
       "description": "<b>System.AppDomain.GetAssemblies</b> can take a lot of CPU time.",
-      "recommendation": "Try to minimize calls to <b>System.AppDomain.GetAssemblies</b> by caching the returned assemblies. When possible, use <b>UnityEditor.TypeCache</b> for fast access to types, methods and fields.",
+      "recommendation": "Try to minimize calls to <b>System.AppDomain.GetAssemblies</b> by caching the returned assemblies. When possible, use <b>UnityEditor.TypeCache</b> for fast access to types, methods and fields. Under the CoreCLR (.NET) scripting runtime, prefer <b>CurrentAssemblies.GetLoadedAssemblies()</b> (in the UnityEngine.Assemblies namespace), which accounts for assemblies loaded and unloaded by code reloading.",
       "documentationUrl": "https://learn.microsoft.com/en-us/dotnet/api/system.appdomain.getassemblies"
     },
     {
@@ -1660,5 +1660,293 @@
       "description": "<b>Object.FindObjectOfType()</b> allocates managed memory and can be slow.",
       "recommendation": "Try to avoid calling this method in frequently-updated code. Ideally, this method should only be used during initialisation, and the results should be cached if they need to be re-used.",
       "documentationUrl": "https://docs.unity3d.com/ScriptReference/Object.FindObjectOfType.html"
+    },
+        {
+      "id": "PAC1032",
+      "type": "UnityEngine.Camera",
+      "method": "AddCommandBuffer",
+      "areas": ["MigrationToURP"],
+      "description": "<b>Camera.AddCommandBuffer()</b> attaches a CommandBuffer to a Built-in Render Pipeline <b>CameraEvent</b>. These injection points do not exist in the Universal Render Pipeline, so the command buffer will silently stop executing when migrating from the Built-in Render Pipeline.",
+      "recommendation": "Reimplement the effect as a <b>ScriptableRendererFeature</b> with a custom <b>ScriptableRenderPass</b> in URP, instead of injecting CommandBuffers via Camera.AddCommandBuffer().",
+      "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html"
+    },
+    {
+      "id": "PAC1033",
+      "type": "UnityEngine.Rendering.PostProcessing",
+      "method": "*",
+      "areas": ["MigrationToURP"],
+      "description": "The <b>UnityEngine.Rendering.PostProcessing</b> namespace belongs to the Post Processing Stack v2 package, which targets the Built-in Render Pipeline. URP has its own integrated post-processing system, so this code will not work when migrating from the Built-in Render Pipeline.",
+      "recommendation": "Migrate Post Processing v2 effects and profiles to URP's Volume-based post-processing using the Render Pipeline Converter.",
+      "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html"
+    },
+    {
+      "id": "PAC1007",
+      "title": "Camera.allowHDR",
+      "type": "UnityEngine.Camera",
+      "method": "set_allowHDR",
+      "areas": ["MigrationToURP"],
+      "description": "Setting <b>Camera.allowHDR</b> has no effect under the Universal Render Pipeline, where HDR is controlled by the <b>HDR</b> option on the URP Asset and per-camera through <b>UniversalAdditionalCameraData</b>. Code that toggles this property will not change rendering when migrating from the Built-in Render Pipeline.",
+      "recommendation": "Control HDR via the <b>HDR</b> option on the URP Asset, or per-camera through <b>camera.GetUniversalAdditionalCameraData()</b>, instead of setting Camera.allowHDR.",
+      "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html"
+    },
+    {
+      "id": "PAC1008",
+      "title": "Camera.allowMSAA",
+      "type": "UnityEngine.Camera",
+      "method": "set_allowMSAA",
+      "areas": ["MigrationToURP"],
+      "description": "Setting <b>Camera.allowMSAA</b> has no effect under the Universal Render Pipeline, where MSAA is controlled by the <b>Anti Aliasing (MSAA)</b> setting on the URP Asset. Code that toggles this property will not change rendering when migrating from the Built-in Render Pipeline.",
+      "recommendation": "Configure MSAA through the <b>Anti Aliasing (MSAA)</b> setting on the URP Asset instead of setting Camera.allowMSAA.",
+      "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html"
+    },
+    {
+      "id": "PAC1009",
+      "title": "Camera.renderingPath",
+      "type": "UnityEngine.Camera",
+      "method": "set_renderingPath",
+      "areas": ["MigrationToURP"],
+      "description": "Setting <b>Camera.renderingPath</b> has no effect under the Universal Render Pipeline, which selects its rendering path through the assigned <b>Renderer</b> on the URP Asset rather than the per-camera Built-in Render Pipeline property.",
+      "recommendation": "Choose the rendering path by assigning the appropriate <b>Renderer</b> on the URP Asset instead of setting Camera.renderingPath.",
+      "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html"
+    },
+    {
+      "id": "PAC1010",
+      "title": "Camera.depthTextureMode",
+      "type": "UnityEngine.Camera",
+      "method": "set_depthTextureMode",
+      "areas": ["MigrationToURP"],
+      "description": "Setting <b>Camera.depthTextureMode</b> does not drive depth texture generation under the Universal Render Pipeline, which produces <b>_CameraDepthTexture</b> based on the <b>Depth Texture</b> setting on the URP Asset. Code relying on this property may not get the depth it expects when migrating from the Built-in Render Pipeline.",
+      "recommendation": "Enable <b>Depth Texture</b> on the URP Asset, or per-camera through <b>UniversalAdditionalCameraData</b>, instead of setting Camera.depthTextureMode.",
+      "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html"
+    },
+    {
+      "id": "PAC1011",
+      "title": "Camera.depth",
+      "type": "UnityEngine.Camera",
+      "method": "set_depth",
+      "areas": ["MigrationToURP"],
+      "description": "Setting <b>Camera.depth</b> controls how camera render outputs are ordered under the Built-in Render Pipeline. The Universal Render Pipeline composites multiple cameras through its Camera Stacking system (<b>Base</b> and <b>Overlay</b> cameras), so scripts relying on the Depth property for ordering may not produce the expected result when migrating from the Built-in Render Pipeline.",
+      "recommendation": "Review whether this camera relies on Depth-based ordering and, if so, use URP Camera Stacking — designate a <b>Base</b> camera and add the others as <b>Overlay</b> cameras on its <b>UniversalAdditionalCameraData</b> stack — instead of setting Camera.depth.",
+      "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html"
+    },
+    {
+      "id": "PAC1012",
+      "title": "ManagedDebugger usage",
+      "type": "UnityEditor.Scripting.ManagedDebugger",
+      "method": "*",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Major",
+      "description": "<b>UnityEditor.Scripting.ManagedDebugger</b> is part of the Mono scripting backend and is not supported under the CoreCLR (.NET) scripting runtime. Code that depends on it will not behave as expected after migrating to CoreCLR.",
+      "recommendation": "Use <b>System.Diagnostics.Debugger</b> (for example, <b>Debugger.IsAttached</b>) instead of UnityEditor.Scripting.ManagedDebugger.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1013",
+      "title": "BinaryFormatter usage",
+      "type": "System.Runtime.Serialization.Formatters.Binary.BinaryFormatter",
+      "method": "*",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Major",
+      "description": "<b>BinaryFormatter</b> is obsolete and is disabled under the CoreCLR (.NET) scripting runtime, where its serialization and deserialization methods throw at runtime.",
+      "recommendation": "Replace <b>BinaryFormatter</b> with a supported serializer such as <b>JsonUtility</b>, <b>System.Text.Json</b>, or <b>DataContractSerializer</b>, or write the data manually with <b>BinaryReader</b> and <b>BinaryWriter</b>.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1014",
+      "title": "Assembly.Location",
+      "type": "System.Reflection.Assembly",
+      "method": "Location",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Moderate",
+      "description": "<b>Assembly.Location</b> returns an empty string under the CoreCLR (.NET) scripting runtime, because assemblies are no longer guaranteed to be loaded from a file on disk.",
+      "recommendation": "Use <b>Assembly.GetLoadedAssemblyPath()</b> (an extension method in the UnityEngine namespace) to obtain an assembly's path instead of Assembly.Location.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1015",
+      "title": "Assembly.LoadFile",
+      "type": "System.Reflection.Assembly",
+      "method": "LoadFile",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Major",
+      "description": "<b>Assembly.LoadFile</b> is not supported under the CoreCLR (.NET) scripting runtime and fails to load assemblies that the Editor or player has not already loaded.",
+      "recommendation": "Load assemblies through <b>CurrentAssemblies.LoadFromPath(string)</b> or <b>CurrentAssemblies.LoadFromBytes(byte[])</b> (in the UnityEngine.Assemblies namespace) instead of Assembly.LoadFile.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1016",
+      "title": "Assembly.LoadFrom",
+      "type": "System.Reflection.Assembly",
+      "method": "LoadFrom",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Major",
+      "description": "<b>Assembly.LoadFrom</b> is not supported under the CoreCLR (.NET) scripting runtime and fails to load assemblies that the Editor or player has not already loaded.",
+      "recommendation": "Load assemblies through <b>CurrentAssemblies.LoadFromPath(string)</b> or <b>CurrentAssemblies.LoadFromBytes(byte[])</b> (in the UnityEngine.Assemblies namespace) instead of Assembly.LoadFrom.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1017",
+      "title": "AppDomain.DomainUnload",
+      "type": "System.AppDomain",
+      "method": "add_DomainUnload",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Moderate",
+      "description": "Subscribing to <b>AppDomain.DomainUnload</b> no longer reliably fires under the CoreCLR (.NET) scripting runtime, which does not unload the managed code space the way Mono does. Cleanup code that relies on this event may never run.",
+      "recommendation": "Move cleanup that depends on <b>AppDomain.DomainUnload</b> to the <b>[OnAssemblyUnloading]</b> lifecycle attribute instead.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1018",
+      "title": "IntPtr.ToInt32",
+      "type": "System.IntPtr",
+      "method": "ToInt32",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Minor",
+      "description": "<b>IntPtr.ToInt32</b> can throw <b>OverflowException</b> under the CoreCLR (.NET) scripting runtime when the pointer value does not fit in a 32-bit integer, which can happen on 64-bit platforms.",
+      "recommendation": "Verify that this conversion cannot overflow. Prefer <b>IntPtr.ToInt64()</b> or keep the value as an <b>IntPtr</b>, or catch <b>OverflowException</b> where a narrowing conversion is required.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1019",
+      "title": "UIntPtr.ToUInt32",
+      "type": "System.UIntPtr",
+      "method": "ToUInt32",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Minor",
+      "description": "<b>UIntPtr.ToUInt32</b> can throw <b>OverflowException</b> under the CoreCLR (.NET) scripting runtime when the pointer value does not fit in a 32-bit unsigned integer, which can happen on 64-bit platforms.",
+      "recommendation": "Verify that this conversion cannot overflow. Prefer <b>UIntPtr.ToUInt64()</b> or keep the value as a <b>UIntPtr</b>, or catch <b>OverflowException</b> where a narrowing conversion is required.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1020",
+      "title": "Encoding.GetEncoding",
+      "type": "System.Text.Encoding",
+      "method": "GetEncoding",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Minor",
+      "description": "<b>Encoding.GetEncoding</b> can throw <b>NotSupportedException</b> under the CoreCLR (.NET) scripting runtime, which registers fewer code pages by default than the Mono scripting runtime did. Requesting an uncommon code page such as Windows-1252 fails unless its encoding provider has been registered.",
+      "recommendation": "Prefer a built-in encoding such as <b>Encoding.UTF8</b> where possible. If a code-page encoding is required, register the provider once at startup with <b>Encoding.RegisterProvider(CodePagesEncodingProvider.Instance)</b>.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1021",
+      "title": "ArrayPool.Return",
+      "type": "System.Buffers.ArrayPool`1",
+      "method": "Return",
+      "areas": ["Memory", "MigrationToCoreCLR"],
+      "defaultSeverity": "Minor",
+      "description": "Returning a buffer to <b>ArrayPool</b> without clearing it leaves any object references stored in the array alive, which can keep those objects from being collected and interfere with code reloading under the CoreCLR (.NET) scripting runtime.",
+      "recommendation": "Pass <b>clearArray: true</b> to <b>ArrayPool.Return</b>, or clear the buffer yourself before returning it, whenever the array holds references to managed objects.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1022",
+      "title": "System.Runtime.Remoting usage",
+      "type": "System.Runtime.Remoting",
+      "method": "*",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Major",
+      "description": "<b>System.Runtime.Remoting</b> is part of .NET Framework remoting and is not available under the CoreCLR (.NET) scripting runtime. Code that uses it will fail to compile or run after migrating.",
+      "recommendation": "Remove the dependency on <b>System.Runtime.Remoting</b> and replace it with a supported inter-process communication mechanism; there is no drop-in replacement package.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1023",
+      "title": "System.ServiceModel (WCF) usage",
+      "type": "System.ServiceModel",
+      "method": "*",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Major",
+      "description": "<b>System.ServiceModel</b> (Windows Communication Foundation) is not available under the CoreCLR (.NET) scripting runtime. Code that uses it will fail to compile or run after migrating.",
+      "recommendation": "Remove the dependency on <b>System.ServiceModel</b> and replace it with a supported networking or RPC library; WCF has no drop-in replacement package.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1024",
+      "title": "System.Web usage",
+      "type": "System.Web",
+      "method": "*",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Major",
+      "description": "<b>System.Web</b> is part of ASP.NET on .NET Framework and is not available under the CoreCLR (.NET) scripting runtime. Code that uses it will fail to compile or run after migrating.",
+      "recommendation": "Remove the dependency on <b>System.Web</b> and replace it with a supported alternative such as <b>System.Net.Http</b> or ASP.NET Core APIs; there is no drop-in replacement package.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1025",
+      "title": "System.Security.Permissions usage",
+      "type": "System.Security.Permissions",
+      "method": "*",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Major",
+      "description": "<b>System.Security.Permissions</b> and Code Access Security are not supported under the CoreCLR (.NET) scripting runtime, where these types are obsolete and have no effect.",
+      "recommendation": "Remove Code Access Security calls; they cannot be replicated under CoreCLR. Rely on operating-system and process-level security instead.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1026",
+      "title": "System.Security.Policy usage",
+      "type": "System.Security.Policy",
+      "method": "*",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Major",
+      "description": "<b>System.Security.Policy</b> and Code Access Security are not supported under the CoreCLR (.NET) scripting runtime, where these types are obsolete and have no effect.",
+      "recommendation": "Remove Code Access Security policy code; it cannot be replicated under CoreCLR. Rely on operating-system and process-level security instead.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1027",
+      "title": "Microsoft.Win32.Registry usage",
+      "type": "Microsoft.Win32.Registry",
+      "method": "*",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Moderate",
+      "description": "<b>Microsoft.Win32.Registry</b> is not part of the core libraries shipped with the CoreCLR (.NET) scripting runtime, so code that accesses the Windows registry through it will fail to resolve after migrating.",
+      "recommendation": "Add the <b>Microsoft.Win32.Registry</b> NuGet package to keep using the registry APIs, and remember that the registry is only available on Windows.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1028",
+      "title": "System.Configuration usage",
+      "type": "System.Configuration",
+      "method": "*",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Moderate",
+      "description": "<b>System.Configuration</b> (the .NET Framework app.config and ConfigurationManager APIs) is not shipped with the CoreCLR (.NET) scripting runtime, so code that uses it will fail to resolve after migrating.",
+      "recommendation": "Add the <b>System.Configuration.ConfigurationManager</b> NuGet package, or move configuration to a supported format such as JSON.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1029",
+      "title": "System.Drawing usage",
+      "type": "System.Drawing",
+      "method": "*",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Moderate",
+      "description": "<b>System.Drawing</b> is not shipped with the CoreCLR (.NET) scripting runtime, so code that uses it will fail to resolve after migrating.",
+      "recommendation": "Add the <b>System.Drawing.Common</b> NuGet package (Windows only), or use Unity's own imaging APIs such as <b>Texture2D</b> instead.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1030",
+      "title": "AppDomain.CreateDomain",
+      "type": "System.AppDomain",
+      "method": "CreateDomain",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Moderate",
+      "description": "<b>AppDomain.CreateDomain</b> is not supported under the CoreCLR (.NET) scripting runtime, which cannot create additional application domains and throws when it is called.",
+      "recommendation": "Remove use of additional <b>AppDomain</b> instances. Isolate code with separate processes or an <b>AssemblyLoadContext</b> instead.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1031",
+      "title": "Thread.Abort",
+      "type": "System.Threading.Thread",
+      "method": "Abort",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Moderate",
+      "description": "<b>Thread.Abort</b> is not supported under the CoreCLR (.NET) scripting runtime and throws <b>PlatformNotSupportedException</b> when it is called.",
+      "recommendation": "Use cooperative cancellation with a <b>CancellationToken</b> to stop background work instead of <b>Thread.Abort</b>.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
     }
 ]

@@ -3,6 +3,7 @@
     "rootNamespace": "",
     "references": [
         "Unity.ProjectAuditor.Editor",
+        "Unity.ProjectAuditor.Editor.Modules",
         "Unity.ProjectAuditor.Editor.Utils"
     ],
     "includePlatforms": [
@@ -25,6 +26,11 @@
             "name": "Unity",
             "expression": "6000.5",
             "define": "HAS_PROJECT_AUDITOR"
+        },
+        {
+            "name": "com.unity.project-auditor",
+            "expression": "3.1.1",
+            "define": "PROJECT_AUDITOR_3_1_1_IS_INSTALLED"
         }
     ],
     "noEngineReferences": false

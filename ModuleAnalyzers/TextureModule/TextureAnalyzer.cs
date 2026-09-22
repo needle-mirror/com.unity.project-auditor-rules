@@ -17,6 +17,7 @@ namespace Unity.ProjectAuditorRules.TextureModuleAnalyzers
         internal const string PAA0002 = nameof(PAA0002);
         internal const string PAA0003 = nameof(PAA0003);
         internal const string PAA0004 = nameof(PAA0004);
+        internal const string PAA0009 = nameof(PAA0009);
 
         internal static readonly Descriptor k_TextureMipmapsNotEnabledDescriptor = new Descriptor(
             PAA0000,
@@ -139,6 +140,38 @@ namespace Unity.ProjectAuditorRules.TextureModuleAnalyzers
             }
         };
 
+        static readonly Descriptor k_TexturePVRTCDescriptor = new Descriptor(
+            PAA0009,
+            "Texture: Deprecated PVRTC compression format",
+            Areas.Upgrade,
+            "The texture uses a PVRTC compression format. PVRTC texture compression is deprecated from Unity 6.1.",
+            "Change the texture's compression format to ASTC (preferred) or ETC in the texture's platform import settings.")
+        {
+#if UNITY_6000_4_OR_NEWER
+            Platforms = new SerializableEnum<BuildTarget>[] { BuildTarget.iOS },
+#else
+            Platforms = new[] { BuildTarget.iOS },
+#endif
+            MessageFormat = "Texture '{0}' uses deprecated PVRTC compression ({1})",
+            Fixer = (issue, analysisParams) =>
+            {
+                var textureImporter = AssetImporter.GetAtPath(issue.RelativePath) as TextureImporter;
+                if (textureImporter == null)
+                    return false;
+
+                var platform = analysisParams.Platform.ToString();
+                var platformSettings = textureImporter.GetPlatformTextureSettings(platform);
+                if (!IsPVRTCFormat(platformSettings.format))
+                    return false;
+
+                platformSettings.overridden = true;
+                platformSettings.format = GetASTCReplacementFormat(platformSettings.format);
+                textureImporter.SetPlatformTextureSettings(platformSettings);
+                textureImporter.SaveAndReimport();
+                return true;
+            }
+        };
+
 #pragma warning disable CS0649
         [DiagnosticParameter("TextureStreamingMipmapsSizeLimit", "Maximum non-streaming Texture size (pixels)", "If a texture is larger than this limit and not setup for streaming then an Issue will be created.  Note: we square the threshold and compare it to the (width * height) of the texture.", 4000)]
         int m_StreamingMipmapsSizeLimit;
@@ -154,6 +187,7 @@ namespace Unity.ProjectAuditorRules.TextureModuleAnalyzers
             registerDescriptor(k_TextureReadWriteEnabledDescriptor);
             registerDescriptor(k_TextureStreamingMipMapEnabledDescriptor);
             registerDescriptor(k_TextureAnisotropicLevelDescriptor);
+            registerDescriptor(k_TexturePVRTCDescriptor);
         }
 
         public override IEnumerable<ReportItem> Analyze(TextureAnalysisContext context)
@@ -212,6 +246,44 @@ namespace Unity.ProjectAuditorRules.TextureModuleAnalyzers
 #endif
                     .WithLocation(location);
             }
+
+            if (k_TexturePVRTCDescriptor.IsSupported(context.Params))
+            {
+                if (context.ImporterPlatformSettings != null)
+                {
+                    var format = context.ImporterPlatformSettings.format;
+
+                    if (IsPVRTCFormat(format))
+                    {
+                        yield return context.CreateIssue(IssueCategory.AssetIssue, k_TexturePVRTCDescriptor.Id, context.Name, format.ToString())
+#if UNITY_6000_6_OR_NEWER
+                            .WithDependencies(dependencyNode)
+#endif
+                            .WithLocation(location)
+                            .WithUpgradeProperties("6000.1", null, null);
+                    }
+                }
+            }
+        }
+
+        static bool IsPVRTCFormat(TextureImporterFormat format)
+        {
+            // Match any PVRTC enum member
+            return format.ToString().IndexOf("PVRTC", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        static TextureImporterFormat GetASTCReplacementFormat(TextureImporterFormat format)
+        {
+#pragma warning disable CS0618
+            switch (format)
+            {
+                case TextureImporterFormat.PVRTC_RGB2:
+                case TextureImporterFormat.PVRTC_RGBA2:
+                    return TextureImporterFormat.ASTC_8x8; // 2 bits per pixel
+                default:
+                    return TextureImporterFormat.ASTC_6x6; // ~3.6 bits per pixel, replacing 4 bits per pixel PVRTC
+            }
+#pragma warning restore CS0618
         }
     }
 }

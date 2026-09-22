@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.ProjectAuditor.Editor;
 using Unity.ProjectAuditor.Editor.Core;
+using Unity.ProjectAuditor.Editor.Modules;
 using UnityEditor;
 using UnityEditor.Rendering;
 using UnityEngine;
@@ -16,6 +17,8 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
         internal const string PAS0022 = nameof(PAS0022);
         internal const string PAS0023 = nameof(PAS0023);
         internal const string PAS0024 = nameof(PAS0024);
+        internal const string PAS0040 = nameof(PAS0040);
+        internal const string PAS0041 = nameof(PAS0041);
 
         static readonly Descriptor k_ShaderQualityDescriptor = new Descriptor(
             PAS0022,
@@ -38,16 +41,62 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
             "The current build target uses deferred rendering, as set in the <b>Rendering Path</b> settings in <b>Project Settings > Graphics > Tier Settings</b>. This can impact GPU performance in projects with simple rendering requirements.",
             "This rendering path is suitable for applications with more complex rendering requirements - for instance, applications that make use of dynamic lighting or certain types of fullscreen post-processing effects. If the project doesn't make use of such rendering techniques, consider experimenting with changing <b>Rendering Path</b> to Forward to see whether doing so improves GPU rendering times.");
 
+        static readonly Descriptor k_DeprecationDescriptor = new Descriptor(
+            PAS0040,
+            "Graphics: Project uses the Built-in Render Pipeline",
+            Areas.Upgrade | Areas.MigrationToURP,
+            "The Built-in Render Pipeline will be removed in Unity 7. Unity recommends that you migrate to the Universal Render Pipeline (URP).",
+            "Install the URP package, then use the <b>Render Pipeline Converter</b> (<b>Window > Rendering > Render Pipeline Converter</b>) to convert your assets. Finally, address all reported <b>Migration To URP</b> issues.")
+        {
+            DefaultSeverity = Severity.Major,
+            MaximumVersion = "6000.7",
+#if UNITY_6000_7_OR_NEWER
+            DocumentationUrl = MigrationToURPUtilities.DocumentationUrl,
+            FixerLabel = "Migrate to URP",
+            Fixer = MigrationToURPUtilities.OpenRenderPipelineConverter
+#endif
+        };
+
+        static readonly Descriptor k_RemovalDescriptor = new Descriptor(
+            PAS0041,
+            "Graphics: Project uses the Built-in Render Pipeline",
+            Areas.Upgrade,
+            "Unity has removed the Built-in Render Pipeline in Unity 7. Projects that have not migrated to the Universal Render Pipeline (URP) will no longer function.",
+            "Install the URP package, then use the <b>Render Pipeline Converter</b> (<b>Window > Rendering > Render Pipeline Converter</b>) to convert your assets. Finally, address all reported <b>Migration To URP</b> issues.")
+        {
+            DefaultSeverity = Severity.Major,
+            MinimumVersion = "7000.0",
+#if UNITY_6000_7_OR_NEWER
+            DocumentationUrl = MigrationToURPUtilities.DocumentationUrl,
+            FixerLabel = "Migrate to URP",
+            Fixer = MigrationToURPUtilities.OpenRenderPipelineConverter
+#endif
+        };
+
         public override void Initialize(Action<Descriptor> registerDescriptor)
         {
             registerDescriptor(k_ShaderQualityDescriptor);
             registerDescriptor(k_ForwardRenderingDescriptor);
             registerDescriptor(k_DeferredRenderingDescriptor);
+            registerDescriptor(k_DeprecationDescriptor);
+            registerDescriptor(k_RemovalDescriptor);
         }
 
         public override IEnumerable<ReportItem> Analyze(SettingsAnalysisContext context)
         {
-            // Only check for Built-In Rendering Pipeline
+            if (k_DeprecationDescriptor.IsSupported(context.Params))
+            {
+                yield return context.CreateIssue(IssueCategory.ProjectSetting, k_DeprecationDescriptor.Id)
+                    .WithLocation("Project/Graphics")
+                    .WithUpgradeProperties("6000.5", "7000.0", null);
+            }
+            if (k_RemovalDescriptor.IsSupported(context.Params))
+            {
+                yield return context.CreateIssue(IssueCategory.ProjectSetting, k_RemovalDescriptor.Id)
+                    .WithLocation("Project/Graphics")
+                    .WithUpgradeProperties("7000.0", null, null);
+            }
+
             if (IsUsingBuiltinRenderPipeline())
             {
                 if (IsMixedStandardShaderQuality(context.Params.Platform))
