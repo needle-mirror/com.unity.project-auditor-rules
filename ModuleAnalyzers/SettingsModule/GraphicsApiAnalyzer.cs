@@ -127,7 +127,7 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
 
             foreach (var rule in k_Rules)
             {
-                if (rule.Descriptor.IsSupported(context.Params) &&
+                if (context.IsDescriptorEnabled(rule.Descriptor) &&
                     IsLowerPriorityApiPreferred(graphicsApis, rule.Preferred, rule.LowerPriority))
                 {
                     yield return context.CreateIssue(IssueCategory.ProjectSetting, rule.Descriptor.Id)

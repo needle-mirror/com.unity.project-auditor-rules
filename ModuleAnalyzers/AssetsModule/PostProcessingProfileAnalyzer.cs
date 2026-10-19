@@ -38,7 +38,7 @@ namespace Unity.ProjectAuditorRules.AssetsModuleAnalyzers
 
         public override IEnumerable<ReportItem> Analyze(AssetAnalysisContext context)
         {
-            if (!k_PostProcessProfileDescriptor.IsSupported(context.Params))
+            if (!context.IsDescriptorEnabled(k_PostProcessProfileDescriptor))
                 yield break;
 
             // PostProcessProfile assets are serialized as .asset files.

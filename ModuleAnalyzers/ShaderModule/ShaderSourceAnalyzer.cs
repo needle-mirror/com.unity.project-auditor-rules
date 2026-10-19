@@ -9,6 +9,7 @@ using System.Reflection;
 using Unity.ProjectAuditor.Editor;
 using Unity.ProjectAuditor.Editor.Core;
 using Unity.ProjectAuditor.Editor.Modules;
+using Unity.ProjectAuditorRules.ShadersModuleAnalyzers;
 using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEngine;
@@ -47,7 +48,7 @@ namespace Unity.ProjectAuditorRules.ShaderModuleAnalyzers
             DocumentationUrl = MigrationToURPUtilities.DocumentationUrl,
 #endif
 #if UNITY_6000_5_OR_NEWER
-            FixerLabel = "Replace with generated source",
+            FixerLabel = "Convert Source",
 #endif
             Fixer = FixSurfaceShader
         };
@@ -67,7 +68,7 @@ namespace Unity.ProjectAuditorRules.ShaderModuleAnalyzers
             DocumentationUrl = MigrationToURPUtilities.DocumentationUrl,
 #endif
 #if UNITY_6000_5_OR_NEWER
-            FixerLabel = "Replace with generated source",
+            FixerLabel = "Convert Source",
 #endif
             Fixer = FixFixedFunctionShader
         };
@@ -131,10 +132,10 @@ namespace Unity.ProjectAuditorRules.ShaderModuleAnalyzers
         // Both '"path"' and '<path>' delimit an include path.
         static readonly char[] k_IncludePathDelimiters = { '"', '<' };
 
+#if SUPPORTS_CACHE
         // Key: project-relative path of a scanned include file, Value: BiRP header that file includes
         // (directly or transitively), or null if none
-#if SUPPORTS_CACHE
-        Dictionary<string, string> m_ScannedFiles = new Dictionary<string, string>();
+        Dictionary<string, string> m_ScannedBirpIncludes = new Dictionary<string, string>();
 #endif
 
         public override void Initialize(Action<Descriptor> registerDescriptor)
@@ -148,51 +149,157 @@ namespace Unity.ProjectAuditorRules.ShaderModuleAnalyzers
 #if SUPPORTS_CACHE
         public override void OnAnalysisStarted()
         {
-            m_ScannedFiles.Clear();
+            m_ScannedBirpIncludes.Clear();
         }
 #endif
 
         public override IEnumerable<ReportItem> Analyze(ShaderAnalysisContext context)
         {
-            // All checks only run if we are offering URP migration advice
-            if (!k_SurfaceShaderDescriptor.IsSupported(context.Params))
-                yield break;
-
-            // Read the .shader's source.
-            if (!TryReadShaderSource(context.AssetPath, out var source))
-                yield break;
-
             var shaderName = context.Shader.name;
             var location = new Location(context.AssetPath);
 
-            // Surface shader
-            if (IsSurfaceShader(context.Shader, source))
-            {
-                yield return context.CreateIssue(IssueCategory.AssetIssue, k_SurfaceShaderDescriptor.Id, shaderName)
-                    .WithLocation(location);
-            }
-
             // Fixed function shader
-            if (IsFixedFunctionShader(context.Shader))
+            if (context.IsDescriptorEnabled(k_FixedFunctionShaderDescriptor) && IsFixedFunctionShader(context.Shader))
             {
                 yield return context.CreateIssue(IssueCategory.AssetIssue, k_FixedFunctionShaderDescriptor.Id, shaderName)
                     .WithLocation(location);
             }
 
+            // Read the .shader's source.
+            if (!TryReadShaderSource(context.AssetPath, out var source))
+                yield break;
+
+            // Surface shader
+            if (context.IsDescriptorEnabled(k_SurfaceShaderDescriptor) && IsSurfaceShader(context.Shader, source))
+            {
+                yield return context.CreateIssue(IssueCategory.AssetIssue, k_SurfaceShaderDescriptor.Id, shaderName)
+                    .WithLocation(location);
+            }
+
             // GrabPass
-            if (source.Contains("GrabPass"))
+            if (context.IsDescriptorEnabled(k_GrabPassDescriptor) && source.Contains("GrabPass"))
             {
                 yield return context.CreateIssue(IssueCategory.AssetIssue, k_GrabPassDescriptor.Id, shaderName)
                     .WithLocation(location);
             }
 
-            // Scan for BiRP includes
-            var birpInclude = SearchForBirpHeaders(context.AssetPath, source);
-            if (!string.IsNullOrEmpty(birpInclude))
+            // Scan for BiRP includes, restricted to the SubShader URP would actually select - an #include
+            // that lives only in a later Built-in Render Pipeline fallback SubShader is not a URP problem
+            // (URP never reaches it); PAA5004 already flags that SubShader separately as harmless cleanup.
+			if (context.IsDescriptorEnabled(k_BirpIncludeDescriptor))
             {
-                yield return context.CreateIssue(IssueCategory.AssetIssue, k_BirpIncludeDescriptor.Id, shaderName, birpInclude)
-                    .WithLocation(location);
+                var scopedSource = ScopeToUrpSelectedSubshader(context.Shader, source);
+                var birpInclude = SearchForBirpHeaders(context.AssetPath, scopedSource);
+                if (!string.IsNullOrEmpty(birpInclude))
+                {
+                    yield return context.CreateIssue(IssueCategory.AssetIssue, k_BirpIncludeDescriptor.Id, shaderName, birpInclude)
+                        .WithLocation(location);
+                }
+			}
+        }
+
+        // Restricts the shader source to just the SubShader URP would select, so an #include that lives
+        // only in a later SubShader isn't mistaken for a live URP problem (see the PAA2004 call site).
+        // SubShader blocks are declared top-level and in order, so the boundary is simply the start of the
+        // next "SubShader" keyword occurrence - this avoids needing a full brace-matching parser. Falls
+        // back to the whole source if the selected SubShader, or its end boundary, can't be found this way.
+        static string ScopeToUrpSelectedSubshader(Shader shader, string source)
+        {
+            var selectedIndex = ShaderUrpRenderabilityAnalyzer.FindUrpSelectedSubshaderIndex(shader);
+            if (selectedIndex < 0)
+                return source;
+
+            // Search a masked copy (same length, so indices still apply to the original source) with string
+            // literals and comments blanked out, so a shader name like "Custom/MySubShader" or a comment
+            // mentioning "SubShader" isn't mistaken for an actual block declaration.
+            var maskedSource = MaskStringsAndComments(source);
+
+            var searchIndex = -1;
+            for (var i = 0; i <= selectedIndex; i++)
+            {
+                searchIndex = FindSubShaderKeyword(maskedSource, searchIndex + 1);
+                if (searchIndex < 0)
+                    return source;
             }
+
+            var nextSubshaderIndex = FindSubShaderKeyword(maskedSource, searchIndex + 1);
+            return nextSubshaderIndex < 0 ? source : source.Substring(0, nextSubshaderIndex);
+        }
+
+        // Finds the next "SubShader" keyword occurrence at or after startIndex in text that has already had
+        // string literals and comments masked out (see MaskStringsAndComments), requiring a word boundary on
+        // both sides so it only matches the keyword itself, not as part of a longer identifier.
+        static int FindSubShaderKeyword(string maskedSource, int startIndex)
+        {
+            const string k_SubShaderKeyword = "SubShader";
+
+            var index = startIndex;
+            while (true)
+            {
+                index = maskedSource.IndexOf(k_SubShaderKeyword, index, StringComparison.OrdinalIgnoreCase);
+                if (index < 0)
+                    return -1;
+
+                var before = index - 1;
+                var after = index + k_SubShaderKeyword.Length;
+                if ((before < 0 || !IsIdentifierChar(maskedSource[before])) &&
+                    (after >= maskedSource.Length || !IsIdentifierChar(maskedSource[after])))
+                    return index;
+
+                index++;
+            }
+        }
+
+        static bool IsIdentifierChar(char c) => char.IsLetterOrDigit(c) || c == '_';
+
+        // Blanks out the contents of ShaderLab string literals and // and /* */ comments (replacing each
+        // character with a space, except newlines which are preserved), so searching for a ShaderLab keyword
+        // in the result can't match text that only appears inside a quoted name or a comment. The output has
+        // the same length as source, so an index found in it is still valid against the original source.
+        static string MaskStringsAndComments(string source)
+        {
+            var result = new char[source.Length];
+            var i = 0;
+
+            while (i < source.Length)
+            {
+                var c = source[i];
+
+                if (c == '"')
+                {
+                    result[i++] = ' ';
+                    while (i < source.Length && source[i] != '"')
+                        result[i] = source[i++] == '\n' ? '\n' : ' ';
+                    if (i < source.Length)
+                        result[i++] = ' '; // closing quote
+                    continue;
+                }
+
+                if (c == '/' && i + 1 < source.Length && source[i + 1] == '/')
+                {
+                    while (i < source.Length && source[i] != '\n')
+                        result[i++] = ' ';
+                    continue;
+                }
+
+                if (c == '/' && i + 1 < source.Length && source[i + 1] == '*')
+                {
+                    result[i++] = ' ';
+                    result[i++] = ' ';
+                    while (i < source.Length && !(source[i] == '*' && i + 1 < source.Length && source[i + 1] == '/'))
+                        result[i] = source[i++] == '\n' ? '\n' : ' ';
+                    if (i < source.Length)
+                        result[i++] = ' ';
+                    if (i < source.Length)
+                        result[i++] = ' ';
+                    continue;
+                }
+
+                result[i] = c;
+                i++;
+            }
+
+            return new string(result);
         }
 
         static bool IsSurfaceShader(Shader shader, string source)
@@ -276,7 +383,7 @@ namespace Unity.ProjectAuditorRules.ShaderModuleAnalyzers
                     continue;
 
 #if SUPPORTS_CACHE
-                if (m_ScannedFiles.TryGetValue(includePath, out var scannedInclude))
+                if (m_ScannedBirpIncludes.TryGetValue(includePath, out var scannedInclude))
                 {
                     if (!string.IsNullOrEmpty(scannedInclude))
                         return scannedInclude;
@@ -302,14 +409,14 @@ namespace Unity.ProjectAuditorRules.ShaderModuleAnalyzers
                 if (!string.IsNullOrEmpty(nestedInclude))
                 {
 #if SUPPORTS_CACHE
-                    m_ScannedFiles[includePath] = nestedInclude;
+                    m_ScannedBirpIncludes[includePath] = nestedInclude;
 #endif
                     return nestedInclude;
                 }
 
 #if SUPPORTS_CACHE
                 if (!nestedCycleCut)
-                    m_ScannedFiles[includePath] = null;
+                    m_ScannedBirpIncludes[includePath] = null;
 #endif
             }
 

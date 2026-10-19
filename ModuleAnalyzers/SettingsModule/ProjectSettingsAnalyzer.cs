@@ -56,7 +56,7 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
 
             foreach (var descriptor in m_Descriptors)
             {
-                if (!descriptor.IsSupported(context.Params))
+                if (!context.IsDescriptorEnabled(descriptor))
                     continue;
 
                 var issue = Evaluate(context, descriptor);
@@ -180,13 +180,23 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
 
 #pragma warning restore CS0649
 
+        static string ReadRulesFile()
+        {
+            var packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssembly(typeof(ProjectSettingsAnalyzer).Assembly);
+            if (packageInfo != null)
+            {
+                var path = Path.Combine(packageInfo.resolvedPath, "Rules", "ProjectSettings.json");
+                if (File.Exists(path))
+                    return File.ReadAllText(path);
+            }
+
+            throw new Exception("Could not load " + k_RulesFilePath);
+        }
+
         static List<Descriptor> LoadDescriptors()
         {
-            var asset = AssetDatabase.LoadAssetAtPath<TextAsset>(k_RulesFilePath);
-            if (asset == null)
-                throw new Exception("Could not load " + k_RulesFilePath);
-
-            var rawDescriptors = JsonUtility.FromJson<SerializedDescriptorCollection>("{\"descriptors\":" + asset.text + "}").descriptors;
+            var json = ReadRulesFile();
+            var rawDescriptors = JsonUtility.FromJson<SerializedDescriptorCollection>("{\"descriptors\":" + json + "}").descriptors;
             var descriptors = new List<Descriptor>(rawDescriptors.Length);
 
             foreach (var rawDescriptor in rawDescriptors)

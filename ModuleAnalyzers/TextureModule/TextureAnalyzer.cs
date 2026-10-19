@@ -237,7 +237,7 @@ namespace Unity.ProjectAuditorRules.TextureModuleAnalyzers
                     .WithLocation(location);
             }
 
-            if (k_TextureAnisotropicLevelDescriptor.IsSupported(context.Params) &&
+            if (context.IsDescriptorEnabled(k_TextureAnisotropicLevelDescriptor) &&
                 context.Importer.mipmapEnabled && context.Importer.filterMode != FilterMode.Point && context.Importer.anisoLevel > 1)
             {
                 yield return context.CreateIssue(IssueCategory.AssetIssue, k_TextureAnisotropicLevelDescriptor.Id, context.Name, context.Importer.anisoLevel)
@@ -247,7 +247,7 @@ namespace Unity.ProjectAuditorRules.TextureModuleAnalyzers
                     .WithLocation(location);
             }
 
-            if (k_TexturePVRTCDescriptor.IsSupported(context.Params))
+            if (context.IsDescriptorEnabled(k_TexturePVRTCDescriptor))
             {
                 if (context.ImporterPlatformSettings != null)
                 {

@@ -18,5 +18,29 @@
     "name": "OnGUI",
     "recommendation": "Remove all OnGUI() methods from the project code",
     "documentationUrl": "https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnGUI.html"
+  },
+  {
+    "name": "OnPreCull",
+    "recommendation": "OnPreCull() is not called when a Scriptable Render Pipeline (such as URP) is active, so this method will silently stop running when migrating from the Built-in Render Pipeline. Use RenderPipelineManager.beginCameraRendering instead.",
+    "documentationUrl": "https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnPreCull.html",
+    "area": "MigrationToURP"
+  },
+  {
+    "name": "OnPreRender",
+    "recommendation": "OnPreRender() is not called when a Scriptable Render Pipeline (such as URP) is active, so this method will silently stop running when migrating from the Built-in Render Pipeline. Inject a custom ScriptableRenderPass at RenderPassEvent.BeforeRendering (or BeforeRenderingOpaques if full camera setup is required) instead.",
+    "documentationUrl": "https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnPreRender.html",
+    "area": "MigrationToURP"
+  },
+  {
+    "name": "OnPostRender",
+    "recommendation": "OnPostRender() is not called when a Scriptable Render Pipeline (such as URP) is active, so this method will silently stop running when migrating from the Built-in Render Pipeline. Inject a custom ScriptableRenderPass at RenderPassEvent.AfterRendering instead (avoid issuing draw calls directly from RenderPipelineManager.endCameraRendering).",
+    "documentationUrl": "https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnPostRender.html",
+    "area": "MigrationToURP"
+  },
+  {
+    "name": "OnRenderImage",
+    "recommendation": "OnRenderImage() is not called when a Scriptable Render Pipeline (such as URP) is active, so this method will silently stop running when migrating from the Built-in Render Pipeline. Use the Full Screen Pass Renderer Feature, or a custom ScriptableRenderPass, instead.",
+    "documentationUrl": "https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnRenderImage.html",
+    "area": "MigrationToURP"
   }
 ]

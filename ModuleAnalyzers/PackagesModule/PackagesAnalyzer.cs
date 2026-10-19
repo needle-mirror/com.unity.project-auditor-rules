@@ -173,7 +173,7 @@ namespace Unity.ProjectAuditorRules.PackagesModuleAnalyzers
                             .WithLocation(package.assetPath)
                             .WithUpgradeProperties(versionString, null, null);
                     }
-                    else if (comparison > 0)
+                    else if (comparison > 0 && !package.name.StartsWith("com.unity.project-auditor"))
                     {
                         yield return context.CreateIssue(IssueCategory.ProjectSetting, k_RecommendPackageDowngrade.Id, package.name, package.version, recommendedVersionString)
                             .WithLocation(package.assetPath)

@@ -64,13 +64,13 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
 
         public override IEnumerable<ReportItem> Analyze(SettingsAnalysisContext context)
         {
-            if (k_EngineCodeStrippingDescriptor.IsSupported(context.Params) && !PlayerSettings.stripEngineCode)
+            if (context.IsDescriptorEnabled(k_EngineCodeStrippingDescriptor) && !PlayerSettings.stripEngineCode)
             {
                 yield return context.CreateIssue(IssueCategory.ProjectSetting, k_EngineCodeStrippingDescriptor.Id)
                     .WithLocation("Project/Player");
             }
 
-            if (k_AndroidManagedStrippingDescriptor.IsSupported(context.Params))
+            if (context.IsDescriptorEnabled(k_AndroidManagedStrippingDescriptor))
             {
                 var value = PlayerSettings.GetManagedStrippingLevel(NamedBuildTarget.FromBuildTargetGroup(BuildTargetGroup.Android));
                 if (value == ManagedStrippingLevel.Disabled || value == ManagedStrippingLevel.Low || value == ManagedStrippingLevel.Minimal)
@@ -80,7 +80,7 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
                 }
             }
 
-            if (k_iOSManagedStrippingDescriptor.IsSupported(context.Params))
+            if (context.IsDescriptorEnabled(k_iOSManagedStrippingDescriptor))
             {
                 var value = PlayerSettings.GetManagedStrippingLevel(NamedBuildTarget.FromBuildTargetGroup(BuildTargetGroup.iOS));
                 if (value == ManagedStrippingLevel.Disabled || value == ManagedStrippingLevel.Low || value == ManagedStrippingLevel.Minimal)

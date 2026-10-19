@@ -35,7 +35,7 @@ namespace Unity.ProjectAuditorRules.PackagesModuleAnalyzers
 
         public override IEnumerable<ReportItem> Analyze(PackageAnalysisContext context)
         {
-            if (k_PostProcessingV2Descriptor.IsSupported(context.Params))
+            if (context.IsDescriptorEnabled(k_PostProcessingV2Descriptor))
             {
                 var package = context.PackageInfo;
                 if (package.name == k_PostProcessingV2PackageName)

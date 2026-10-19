@@ -41,7 +41,7 @@ namespace Unity.ProjectAuditorRules.GameObjectModuleAnalyzers
 #if UNITY_6000_7_OR_NEWER
             DocumentationUrl = MigrationToURPUtilities.DocumentationUrl,
 #endif
-            MessageFormat = "Legacy '{0}' component on '{1}' is not supported by URP and must be replaced. Migrate to '{2}' instead.",
+            MessageFormat = "Legacy '{0}' component on '{1}' is not supported by URP and must be replaced. Migrate to '{2}' instead",
         };
 
         static readonly string[] k_PostProcessingComponentNames =
@@ -69,7 +69,7 @@ namespace Unity.ProjectAuditorRules.GameObjectModuleAnalyzers
         {
             var gameObject = context.GameObject;
 
-            if (k_PostProcessingComponentDescriptor.IsSupported(context.Params))
+            if (context.IsDescriptorEnabled(k_PostProcessingComponentDescriptor))
             {
                 foreach (var componentName in k_PostProcessingComponentNames)
                 {
@@ -86,7 +86,7 @@ namespace Unity.ProjectAuditorRules.GameObjectModuleAnalyzers
                 }
             }
 
-            if (k_MigrateComponentIssueDescriptor.IsSupported(context.Params))
+            if (context.IsDescriptorEnabled(k_MigrateComponentIssueDescriptor))
             {
                 foreach (var migration in k_MigrationTypes)
                 {

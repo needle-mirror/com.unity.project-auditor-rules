@@ -18,8 +18,8 @@ namespace Unity.ProjectAuditorRules.TextureModuleAnalyzers
     class TextureUtilizationAnalyzer : TextureModuleAnalyzer
     {
         internal const string PAA0005 = nameof(PAA0005);
-        internal const string PAA0006 = nameof(PAA0006);
         internal const string PAA0007 = nameof(PAA0007);
+        internal const string PAA0010 = nameof(PAA0010);
 
         internal static readonly Descriptor k_TextureSolidColorDescriptor = new Descriptor(
             PAA0005,
@@ -34,24 +34,11 @@ namespace Unity.ProjectAuditorRules.TextureModuleAnalyzers
             Fixer = (issue, analysisParams) => { return ShrinkSolidTexture(issue.RelativePath); }
         };
 
-        // NOTE:  This is only here to run the same analysis without a quick fix button.  Clean up when we either have appropriate quick fix for other dimensions or improved Fixer support.
-        internal static readonly Descriptor k_TextureSolidColorNoFixerDescriptor = new Descriptor(
-            PAA0006,
-            "Texture: Solid color is not 1x1 size",
-            Areas.Memory,
-            "The texture is a single, solid color and is bigger than 1x1 pixels in size. Redundant texture data occupies memory unnecessarily.",
-            "Consider shrinking the texture to 1x1 size."
-        )
-        {
-            IsEnabledByDefault = false,
-            MessageFormat = "Texture '{0}' is a solid color and not 1x1 size"
-        };
-
         internal static readonly Descriptor k_TextureAtlasEmptyDescriptor = new Descriptor(
             PAA0007,
             "Texture Atlas: Too much empty space",
             Areas.Memory,
-            "The texture atlas contains a lot of empty space. Empty space contributes to texture memory usage.",
+            "The texture atlas contains a lot of fully transparent pixels. Empty space contributes to texture memory usage.",
             "Consider reorganizing your texture atlas in order to reduce the amount of empty space."
         )
         {
@@ -59,20 +46,36 @@ namespace Unity.ProjectAuditorRules.TextureModuleAnalyzers
             MessageFormat = "Texture Atlas '{0}' has too much empty space ({1}, {2})"
         };
 
-        //[DiagnosticParameter("TextureEmptySpaceLimit", "Empty Texture Atlas use threshold (percentage)", "Warn if the percentage of unused pixels in a Texture Atlas is greater than this threshold.", 50)]
-        const int m_EmptySpaceLimit = 0;
+        internal static readonly Descriptor k_TextureTransparentBorderDescriptor = new Descriptor(
+            PAA0010,
+            "Texture: Large transparent border",
+            Areas.Memory | Areas.GPU,
+            "A large part of the texture is a fully transparent border around the visible content. The transparent area wastes texture memory and, when drawn on a quad that covers the whole texture, costs fill rate and overdraw.",
+            "Crop the transparent border from the texture and use a smaller quad or sprite mesh (or a tighter sprite mesh type) instead of drawing the transparent pixels."
+        )
+        {
+            IsEnabledByDefault = false,
+            MessageFormat = "Texture '{0}' has a transparent border covering {1} of the image ({2})"
+        };
+
+#pragma warning disable CS0649
+        [DiagnosticParameter("TextureEmptySpaceLimit", "Empty Texture Atlas threshold (percentage)", "Raise an issue if the percentage of fully transparent pixels in a Texture Atlas is greater than this threshold.", 50)]
+        int m_EmptySpaceLimit;
+
+        [DiagnosticParameter("TextureTransparentBorderLimit", "Transparent Texture Border threshold (percentage)", "Raise an issue if the percentage of a non-atlas texture that lies outside the bounding box of its non-transparent pixels is greater than this threshold.", 75)]
+        int m_TransparentBorderLimit;
+#pragma warning restore CS0649
 
         public override void Initialize(Action<Descriptor> registerDescriptor)
         {
             registerDescriptor(k_TextureSolidColorDescriptor);
-            registerDescriptor(k_TextureSolidColorNoFixerDescriptor);
             registerDescriptor(k_TextureAtlasEmptyDescriptor);
+            registerDescriptor(k_TextureTransparentBorderDescriptor);
         }
 
         public override IEnumerable<ReportItem> Analyze(TextureAnalysisContext context)
         {
-            var dimensionAppropriateDescriptor = context.Texture.dimension == UnityEngine.Rendering.TextureDimension.Tex2D ? k_TextureSolidColorDescriptor : k_TextureSolidColorNoFixerDescriptor;
-            if (context.IsDescriptorEnabled(dimensionAppropriateDescriptor) &&
+            if (context.IsDescriptorEnabled(k_TextureSolidColorDescriptor) &&
                 IsTextureSolidColorTooBig(context.Importer, context.Texture))
             {
                 var location = new Location(context.Importer.assetPath);
@@ -80,7 +83,7 @@ namespace Unity.ProjectAuditorRules.TextureModuleAnalyzers
                 var dependencyNode = new TextureDependencyNode { Location = location };
 #endif
 
-                yield return context.CreateIssue(IssueCategory.AssetIssue, dimensionAppropriateDescriptor.Id, context.Name)
+                yield return context.CreateIssue(IssueCategory.AssetIssue, k_TextureSolidColorDescriptor.Id, context.Name)
 #if UNITY_6000_6_OR_NEWER
                     .WithDependencies(dependencyNode)
 #endif
@@ -88,23 +91,36 @@ namespace Unity.ProjectAuditorRules.TextureModuleAnalyzers
             }
 
             var texture2D = context.Texture as Texture2D;
-            if (context.IsDescriptorEnabled(k_TextureAtlasEmptyDescriptor) && texture2D != null)
-            {
-                GetEmptyPixelsPercent(texture2D, out var emptyPercent, out var emptyBytes);
-                if (emptyPercent > m_EmptySpaceLimit)
-                {
-                    var location = new Location(context.Importer.assetPath);
+            if (texture2D == null)
+                yield break;
+
+            // Atlases (multi-sprite textures) are expected to be packed densely; everything else is
+            // checked for a transparent border that should have been cropped.
+            var isAtlas = context.Importer.spriteImportMode == SpriteImportMode.Multiple;
+            var descriptor = isAtlas ? k_TextureAtlasEmptyDescriptor : k_TextureTransparentBorderDescriptor;
+            if (!context.IsDescriptorEnabled(descriptor))
+                yield break;
+
+            if (!TryGetAlphaStats(texture2D, out var stats))
+                yield break;
+
+            var percent = isAtlas ? stats.TransparentPercent : stats.BorderPercent;
+            var pixels = isAtlas ? stats.TransparentPixels : stats.BorderPixels;
+            var limit = isAtlas ? m_EmptySpaceLimit : m_TransparentBorderLimit;
+            if (percent <= limit)
+                yield break;
+
+            var bytes = (ulong)(pixels * GetBytesPerPixel(texture2D));
+            var assetLocation = new Location(context.Importer.assetPath);
 #if UNITY_6000_6_OR_NEWER
-                    var dependencyNode = new TextureDependencyNode { Location = location };
+            var assetDependencyNode = new TextureDependencyNode { Location = assetLocation };
 #endif
 
-                    yield return context.CreateIssue(IssueCategory.AssetIssue, k_TextureAtlasEmptyDescriptor.Id, context.Name, Formatting.FormatPercentage(emptyPercent / 100.0f), Formatting.FormatSize(emptyBytes))
+            yield return context.CreateIssue(IssueCategory.AssetIssue, descriptor.Id, context.Name, Formatting.FormatPercentage(percent / 100.0f), Formatting.FormatSize(bytes))
 #if UNITY_6000_6_OR_NEWER
-                        .WithDependencies(dependencyNode)
+                .WithDependencies(assetDependencyNode)
 #endif
-                        .WithLocation(location);
-                }
-            }
+                .WithLocation(assetLocation);
         }
 
         static bool ShrinkSolidTexture(string path)
@@ -113,6 +129,7 @@ namespace Unity.ProjectAuditorRules.TextureModuleAnalyzers
             if (textureImporter == null)
                 return false;
 
+            // Only plain 2D textures can be fixed; arrays, 3D textures and cubemaps load as null here.
             var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
             if (texture == null)
                 return false;
@@ -494,21 +511,29 @@ namespace Unity.ProjectAuditorRules.TextureModuleAnalyzers
             return true;
         }
 
-        internal static void GetEmptyPixelsPercent(Texture2D texture2D, out float outPercent, out ulong outBytes)
+        struct AlphaStats
         {
-            outPercent = -1;
-            outBytes = 0;
+            public int TotalPixels;
 
-            if (texture2D == null)
-                return;
+            // Pixels that are fully transparent (alpha == 0), wherever they are in the texture.
+            public int TransparentPixels;
+
+            // Pixels outside the bounding box of the non-transparent pixels, i.e. the fully transparent
+            // border that could be cropped away. All pixels if the texture is entirely transparent.
+            public int BorderPixels;
+
+            public float TransparentPercent => 100.0f * TransparentPixels / TotalPixels;
+            public float BorderPercent => 100.0f * BorderPixels / TotalPixels;
+        }
+
+        static bool TryGetAlphaStats(Texture2D texture2D, out AlphaStats stats)
+        {
+            stats = default;
+
+            if (texture2D == null || texture2D.width == 0 || texture2D.height == 0)
+                return false;
 
             Color32[] pixels;
-
-            if (texture2D.width == 0 || texture2D.height == 0)
-            {
-                outPercent = 0;
-                return;
-            }
 
             if (texture2D.isReadable)
             {
@@ -520,7 +545,7 @@ namespace Unity.ProjectAuditorRules.TextureModuleAnalyzers
                 if (copyTexture == null)
                 {
                     Debug.LogWarning($"Could not copy {texture2D.name}");
-                    return;
+                    return false;
                 }
 
                 try
@@ -530,43 +555,56 @@ namespace Unity.ProjectAuditorRules.TextureModuleAnalyzers
                 catch (ArgumentException)
                 {
                     // in some cases, GetPixels32 fails with a "Texture X has no data." error and throws an exception
-
+                    return false;
+                }
+                finally
+                {
                     //Release texture from Memory
                     Object.DestroyImmediate(copyTexture);
-
-                    return;
                 }
-
-                //Release texture from Memory
-                Object.DestroyImmediate(copyTexture);
             }
 
             // It is unlikely to get a null pixels array, but we should check just in case
             if (pixels == null)
             {
                 Debug.LogWarning($"Could not read {texture2D.name}");
-                return;
+                return false;
             }
 
             // It is unlikely, but possible that we got this far and there are no pixels.
-            var pixelCount = pixels.Length;
-            if (pixelCount == 0)
+            if (pixels.Length == 0)
             {
                 Debug.LogWarning($"No pixels in {texture2D.name}");
-                outPercent = 0;
-                return;
+                return false;
             }
 
-            int transparencyPixelsCount = 0;
-            for (var i = 0; i < pixelCount; i++)
+            var width = texture2D.width;
+            var height = texture2D.height;
+            var transparentCount = 0;
+            int minX = width, minY = height, maxX = -1, maxY = -1;
+            for (var y = 0; y < height; y++)
             {
-                if (pixels[i].a == 0)
-                    transparencyPixelsCount++;
+                var row = y * width;
+                for (var x = 0; x < width; x++)
+                {
+                    if (pixels[row + x].a == 0)
+                    {
+                        transparentCount++;
+                        continue;
+                    }
+
+                    if (x < minX) minX = x;
+                    if (x > maxX) maxX = x;
+                    if (y < minY) minY = y;
+                    if (y > maxY) maxY = y;
+                }
             }
 
-            var percent = (float)transparencyPixelsCount / pixelCount;
-            outPercent = Mathf.Round(percent * 100);
-            outBytes = (ulong)(transparencyPixelsCount * GetBytesPerPixel(texture2D));
+            var contentPixels = maxX < 0 ? 0 : (maxX - minX + 1) * (maxY - minY + 1);
+            stats.TotalPixels = pixels.Length;
+            stats.TransparentPixels = transparentCount;
+            stats.BorderPixels = pixels.Length - contentPixels;
+            return true;
         }
 
         static Texture2D CopyTexture(Texture2D texture)

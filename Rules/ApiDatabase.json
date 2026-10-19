@@ -671,7 +671,7 @@
         "recommendation": "Use <b>iOS.NotificationServices.GetLocalNotification()</b> instead.",
         "maximumVersion": "2021.3",
         "platforms": ["iOS"],
-        "documentationUrl": "https://docs.unity3d.com/ScriptReference/iOS.NotificationServices-localNotifications.html"
+        "documentationUrl": "https://docs.unity3d.com/2021.3/Documentation/ScriptReference/iOS.NotificationServices-localNotifications.html"
     },
     {
         "id": "PAC0097",
@@ -682,7 +682,7 @@
         "recommendation": "Use <b>iOS.NotificationServices.GetRemoteNotification()</b> instead.",
         "maximumVersion": "2021.3",
         "platforms": ["iOS"],
-        "documentationUrl": "https://docs.unity3d.com/ScriptReference/iOS.NotificationServices-remoteNotifications.html"
+        "documentationUrl": "https://docs.unity3d.com/2021.3/Documentation/ScriptReference/iOS.NotificationServices-remoteNotifications.html"
     },
     {
         "id": "PAC0100",
@@ -1224,7 +1224,7 @@
         "description": "The property <b>Network.connections</b> allocates managed memory.",
         "recommendation": "Try to avoid getting this property in frequently-updated code. Ideally, this property should only be used during initialisation, and the results should be cached if they need to be re-used.",
         "maximumVersion": "2018.4",
-        "documentationUrl": "https://docs.unity3d.com/ScriptReference/Network-connections.html"
+        "documentationUrl": "https://docs.unity3d.com/2018.4/Documentation/ScriptReference/Network-connections.html"
     },
     {
         "id": "PAC0171",
@@ -1234,7 +1234,7 @@
         "description": "The property <b>HostData.ip</b> allocates managed memory.",
         "recommendation": "Try to avoid getting this property in frequently-updated code. Ideally, this property should only be used during initialisation, and the results should be cached if they need to be re-used.",
         "maximumVersion": "2018.4",
-        "documentationUrl": "https://docs.unity3d.com/ScriptReference/HostData-ip.html"
+        "documentationUrl": "https://docs.unity3d.com/2018.4/Documentation/ScriptReference/HostData-ip.html"
     },
     {
         "id": "PAC0172",
@@ -1263,7 +1263,7 @@
         "recommendation": "Try to avoid getting this property in frequently-updated code. Ideally, this property should only be used during initialisation, and the results should be cached if they need to be re-used.",
         "maximumVersion": "2021.3",
         "platforms": ["iOS"],
-        "documentationUrl": "https://docs.unity3d.com/ScriptReference/iOS.NotificationServices-deviceToken.html"
+        "documentationUrl": "https://docs.unity3d.com/2021.3/Documentation/ScriptReference/iOS.NotificationServices-deviceToken.html"
     },
     {
         "id": "PAC0176",
@@ -1274,7 +1274,7 @@
         "recommendation": "Try to avoid getting this property in frequently-updated code. Ideally, this property should only be used during initialisation, and the results should be cached if they need to be re-used.",
         "maximumVersion": "2021.3",
         "platforms": ["iOS"],
-        "documentationUrl": "https://docs.unity3d.com/ScriptReference/iOS.NotificationServices-scheduledLocalNotifications.html"
+        "documentationUrl": "https://docs.unity3d.com/2021.3/Documentation/ScriptReference/iOS.NotificationServices-scheduledLocalNotifications.html"
     },
     {
         "id": "PAC0177",
@@ -1402,17 +1402,17 @@
         "recommendation": "Try to avoid getting this property in frequently-updated code. Ideally, this property should only be used during initialisation, and the results should be cached if they need to be re-used.",
         "documentationUrl": "https://docs.unity3d.com/ScriptReference/Tilemaps.TileAnimationData-animatedSprites.html"
     },
-  {
-    "id": "PAC0191",
-    "type": "UnityEngine.UIElements.UxmlAttributeDescription",
-    "method": "obsoleteNames",
-    "areas": [ "Memory" ],
-    "description": "The property <b>UIElements.UxmlAttributeDescription.obsoleteNames</b> allocates managed memory.",
-    "recommendation": "Try to avoid getting this property in frequently-updated code. Ideally, this property should only be used during initialisation, and the results should be cached if they need to be re-used.",
-    "minimumVersion": "2019.1",
-    "maximumVersion": "6000.5",
-    "documentationUrl": "https://docs.unity3d.com/6000.5/Documentation/ScriptReference/UIElements.UxmlAttributeDescription-obsoleteNames.html"
-  },
+    {
+        "id": "PAC0191",
+        "type": "UnityEngine.UIElements.UxmlAttributeDescription",
+        "method": "obsoleteNames",
+        "areas": [ "Memory" ],
+        "description": "The property <b>UIElements.UxmlAttributeDescription.obsoleteNames</b> allocates managed memory.",
+        "recommendation": "Try to avoid getting this property in frequently-updated code. Ideally, this property should only be used during initialisation, and the results should be cached if they need to be re-used.",
+        "minimumVersion": "2019.1",
+        "maximumVersion": "6000.5",
+        "documentationUrl": "https://docs.unity3d.com/6000.5/Documentation/ScriptReference/UIElements.UxmlAttributeDescription-obsoleteNames.html"
+    },
     {
         "id": "PAC0200",
         "type": "UnityEngine.Networking.IMultipartFormSection",
@@ -1475,7 +1475,7 @@
         "description": "The property <b>Networking.NetworkMigrationManager.peers</b> allocates managed memory.",
         "recommendation": "Try to avoid getting this property in frequently-updated code. Ideally, this property should only be used during initialisation, and the results should be cached if they need to be re-used.",
         "maximumVersion": "2018.4",
-        "documentationUrl": "https://docs.unity3d.com/ScriptReference/Networking.NetworkMigrationManager-peers.html"
+        "documentationUrl": "https://docs.unity3d.com/2018.4/Documentation/ScriptReference/Networking.NetworkMigrationManager-peers.html"
     },
     {
         "id": "PAC0216",
@@ -1485,7 +1485,7 @@
         "description": "The property <b>Networking.NetworkServerSimple.messageBuffer</b> allocates managed memory.",
         "recommendation": "Try to avoid getting this property in frequently-updated code. Ideally, this property should only be used during initialisation, and the results should be cached if they need to be re-used.",
         "maximumVersion": "2018.4",
-        "documentationUrl": "https://docs.unity3d.com/ScriptReference/Networking.NetworkServerSimple-messageBuffer.html"
+        "documentationUrl": "https://docs.unity3d.com/2018.4/Documentation/ScriptReference/Networking.NetworkServerSimple-messageBuffer.html"
     },
     {
         "id": "PAC0217",
@@ -1730,6 +1730,96 @@
       "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html"
     },
     {
+      "id": "PAC1034",
+      "title": "Camera.RenderWithShader",
+      "type": "UnityEngine.Camera",
+      "method": "RenderWithShader",
+      "areas": ["MigrationToURP"],
+      "description": "<b>Camera.RenderWithShader()</b> re-renders the camera with every material's shader replaced by a given shader, a Built-in Render Pipeline feature with no equivalent render-pipeline hook in the Universal Render Pipeline.",
+      "recommendation": "Use the Shader Override feature of the <b>Render Objects Renderer Feature</b> instead (or populate the <b>overrideShader</b>/<b>overrideShaderPassIndex</b> fields of <b>DrawingSettings</b> in a custom <b>ScriptableRenderPass</b> for full control).",
+      "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html"
+    },
+    {
+      "id": "PAC1035",
+      "title": "Light.AddCommandBuffer",
+      "type": "UnityEngine.Light",
+      "method": "AddCommandBuffer",
+      "areas": ["MigrationToURP"],
+      "description": "<b>Light.AddCommandBuffer()</b> attaches a CommandBuffer to a Built-in Render Pipeline per-light <b>LightEvent</b>. These injection points do not exist in the Universal Render Pipeline, so the command buffer will silently stop executing when migrating from the Built-in Render Pipeline. Note that URP also processes all additional lights within a single pass, so per-light callbacks are not possible the way the Built-in Render Pipeline's independent per-light passes allowed.",
+      "recommendation": "Reimplement the effect as a custom <b>ScriptableRenderPass</b> injected at <b>RenderPassEvent.BeforeRenderingShadows</b>/<b>AfterRenderingShadows</b>, reading the shadow map textures from <b>UniversalResourceData</b>, instead of injecting CommandBuffers via Light.AddCommandBuffer().",
+      "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html"
+    },
+    {
+      "id": "PAC1040",
+      "title": "Camera.SetReplacementShader",
+      "type": "UnityEngine.Camera",
+      "method": "SetReplacementShader",
+      "areas": ["MigrationToURP"],
+      "description": "<b>Camera.SetReplacementShader()</b> makes the camera render every object with a replacement shader (selected by tag) for all subsequent frames, a Built-in Render Pipeline feature with no equivalent render-pipeline hook in the Universal Render Pipeline.",
+      "recommendation": "Use the Shader Override feature of the <b>Render Objects Renderer Feature</b> instead (or populate the <b>overrideShader</b>/<b>overrideShaderPassIndex</b> fields of <b>DrawingSettings</b> in a custom <b>ScriptableRenderPass</b> for full control).",
+      "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html"
+    },
+    {
+      "id": "PAC1041",
+      "title": "Camera.AddCommandBufferAsync",
+      "type": "UnityEngine.Camera",
+      "method": "AddCommandBufferAsync",
+      "areas": ["MigrationToURP"],
+      "description": "<b>Camera.AddCommandBufferAsync()</b> attaches an asynchronously-executed CommandBuffer to a Built-in Render Pipeline <b>CameraEvent</b>. These injection points do not exist in the Universal Render Pipeline, so the command buffer will silently stop executing when migrating from the Built-in Render Pipeline.",
+      "recommendation": "Reimplement the effect as a <b>ScriptableRendererFeature</b> with a custom <b>ScriptableRenderPass</b> in URP, instead of injecting CommandBuffers via Camera.AddCommandBufferAsync().",
+      "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html"
+    },
+    {
+      "id": "PAC1042",
+      "title": "Light.AddCommandBufferAsync",
+      "type": "UnityEngine.Light",
+      "method": "AddCommandBufferAsync",
+      "areas": ["MigrationToURP"],
+      "description": "<b>Light.AddCommandBufferAsync()</b> attaches an asynchronously-executed CommandBuffer to a Built-in Render Pipeline per-light <b>LightEvent</b>. These injection points do not exist in the Universal Render Pipeline, so the command buffer will silently stop executing when migrating from the Built-in Render Pipeline. Note that URP also processes all additional lights within a single pass, so per-light callbacks are not possible the way the Built-in Render Pipeline's independent per-light passes allowed.",
+      "recommendation": "Reimplement the effect as a custom <b>ScriptableRenderPass</b> injected at <b>RenderPassEvent.BeforeRenderingShadows</b>/<b>AfterRenderingShadows</b>, reading the shadow map textures from <b>UniversalResourceData</b>, instead of injecting CommandBuffers via Light.AddCommandBufferAsync().",
+      "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html?subfolder=/manual/upgrade-guides.html"
+    },
+    {
+      "id": "PAC1036",
+      "title": "MonoBehaviour.OnPreCull",
+      "type": "UnityEngine.MonoBehaviour",
+      "method": "OnPreCull",
+      "areas": ["MigrationToURP"],
+      "description": "<b>OnPreCull()</b> is not called when a Scriptable Render Pipeline (such as URP) is active, so this method will silently stop running when migrating from the Built-in Render Pipeline.",
+      "recommendation": "Use <b>RenderPipelineManager.beginCameraRendering</b> instead.",
+      "documentationUrl": "https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnPreCull.html"
+    },
+    {
+      "id": "PAC1037",
+      "title": "MonoBehaviour.OnPreRender",
+      "type": "UnityEngine.MonoBehaviour",
+      "method": "OnPreRender",
+      "areas": ["MigrationToURP"],
+      "description": "<b>OnPreRender()</b> is not called when a Scriptable Render Pipeline (such as URP) is active, so this method will silently stop running when migrating from the Built-in Render Pipeline.",
+      "recommendation": "Inject a custom <b>ScriptableRenderPass</b> at <b>RenderPassEvent.BeforeRendering</b> (or <b>BeforeRenderingOpaques</b> if full camera setup is required) instead.",
+      "documentationUrl": "https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnPreRender.html"
+    },
+    {
+      "id": "PAC1038",
+      "title": "MonoBehaviour.OnPostRender",
+      "type": "UnityEngine.MonoBehaviour",
+      "method": "OnPostRender",
+      "areas": ["MigrationToURP"],
+      "description": "<b>OnPostRender()</b> is not called when a Scriptable Render Pipeline (such as URP) is active, so this method will silently stop running when migrating from the Built-in Render Pipeline.",
+      "recommendation": "Inject a custom <b>ScriptableRenderPass</b> at <b>RenderPassEvent.AfterRendering</b> instead (avoid issuing draw calls directly from <b>RenderPipelineManager.endCameraRendering</b>).",
+      "documentationUrl": "https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnPostRender.html"
+    },
+    {
+      "id": "PAC1039",
+      "title": "MonoBehaviour.OnRenderImage",
+      "type": "UnityEngine.MonoBehaviour",
+      "method": "OnRenderImage",
+      "areas": ["MigrationToURP"],
+      "description": "<b>OnRenderImage()</b> is not called when a Scriptable Render Pipeline (such as URP) is active, so this method will silently stop running when migrating from the Built-in Render Pipeline.",
+      "recommendation": "Use the <b>Full Screen Pass Renderer Feature</b>, or a custom <b>ScriptableRenderPass</b>, instead.",
+      "documentationUrl": "https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnRenderImage.html"
+    },
+    {
       "id": "PAC1012",
       "title": "ManagedDebugger usage",
       "type": "UnityEditor.Scripting.ManagedDebugger",
@@ -1947,6 +2037,28 @@
       "defaultSeverity": "Moderate",
       "description": "<b>Thread.Abort</b> is not supported under the CoreCLR (.NET) scripting runtime and throws <b>PlatformNotSupportedException</b> when it is called.",
       "recommendation": "Use cooperative cancellation with a <b>CancellationToken</b> to stop background work instead of <b>Thread.Abort</b>.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1043",
+      "title": "Thread.Suspend",
+      "type": "System.Threading.Thread",
+      "method": "Suspend",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Moderate",
+      "description": "<b>Thread.Suspend</b> is not supported under the CoreCLR (.NET) scripting runtime and throws <b>PlatformNotSupportedException</b> when it is called.",
+      "recommendation": "Coordinate threads cooperatively with a <b>ManualResetEventSlim</b>, <b>SemaphoreSlim</b> or <b>CancellationToken</b> instead of <b>Thread.Suspend</b>.",
+      "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
+    },
+    {
+      "id": "PAC1044",
+      "title": "Thread.Resume",
+      "type": "System.Threading.Thread",
+      "method": "Resume",
+      "areas": ["MigrationToCoreCLR"],
+      "defaultSeverity": "Moderate",
+      "description": "<b>Thread.Resume</b> is not supported under the CoreCLR (.NET) scripting runtime and throws <b>PlatformNotSupportedException</b> when it is called.",
+      "recommendation": "Coordinate threads cooperatively with a <b>ManualResetEventSlim</b>, <b>SemaphoreSlim</b> or <b>CancellationToken</b> instead of <b>Thread.Resume</b>.",
       "documentationUrl": "https://docs.unity3d.com/Manual/UpgradeGuides.html"
     }
 ]

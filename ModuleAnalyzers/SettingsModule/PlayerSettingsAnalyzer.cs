@@ -112,7 +112,7 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
 
         public override IEnumerable<ReportItem> Analyze(SettingsAnalysisContext context)
         {
-            if (k_AccelerometerDescriptor.IsSupported(context.Params) && IsAccelerometerEnabled())
+            if (context.IsDescriptorEnabled(k_AccelerometerDescriptor) && IsAccelerometerEnabled())
             {
                 yield return context.CreateIssue(IssueCategory.ProjectSetting, k_AccelerometerDescriptor.Id)
                     .WithLocation("Project/Player");
@@ -122,7 +122,7 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
                 yield return context.CreateIssue(IssueCategory.ProjectSetting, k_SplashScreenDescriptor.Id)
                     .WithLocation("Project/Player");
             }
-            if (k_SpeakerModeDescriptor.IsSupported(context.Params) && !IsSpeakerModeMono())
+            if (context.IsDescriptorEnabled(k_SpeakerModeDescriptor) && !IsSpeakerModeMono())
             {
                 yield return context.CreateIssue(IssueCategory.ProjectSetting, k_SpeakerModeDescriptor.Id)
                     .WithLocation("Project/Player");

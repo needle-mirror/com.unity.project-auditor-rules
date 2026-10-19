@@ -66,13 +66,13 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
         public override IEnumerable<ReportItem> Analyze(SettingsAnalysisContext context)
         {
             // PlayerSettings.GetArchitecture returns an integer value associated with the architecture of a BuildTargetPlatformGroup. 0 - None, 1 - ARM64, 2 - Universal.
-            if (k_DescriptorIOS.IsSupported(context.Params) && PlayerSettings.GetArchitecture(NamedBuildTarget.FromBuildTargetGroup(BuildTargetGroup.iOS)) == 2)
+            if (context.IsDescriptorEnabled(k_DescriptorIOS) && PlayerSettings.GetArchitecture(NamedBuildTarget.FromBuildTargetGroup(BuildTargetGroup.iOS)) == 2)
             {
                 yield return context.CreateIssue(IssueCategory.ProjectSetting, k_DescriptorIOS.Id)
                     .WithLocation("Project/Player");
             }
 
-            if (k_DescriptorAndroid.IsSupported(context.Params) && (PlayerSettings.Android.targetArchitectures & AndroidArchitecture.ARMv7) != 0 &&
+            if (context.IsDescriptorEnabled(k_DescriptorAndroid) && (PlayerSettings.Android.targetArchitectures & AndroidArchitecture.ARMv7) != 0 &&
                 (PlayerSettings.Android.targetArchitectures & AndroidArchitecture.ARM64) != 0)
             {
                 yield return context.CreateIssue(IssueCategory.ProjectSetting, k_DescriptorAndroid.Id)
@@ -80,7 +80,7 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
             }
 
 #pragma warning disable CS0618
-            if (k_DescriptorAndroidX86_64.IsSupported(context.Params) && (PlayerSettings.Android.targetArchitectures & AndroidArchitecture.X86_64) != 0)
+            if (context.IsDescriptorEnabled(k_DescriptorAndroidX86_64) && (PlayerSettings.Android.targetArchitectures & AndroidArchitecture.X86_64) != 0)
             {
                 yield return context.CreateIssue(IssueCategory.ProjectSetting, k_DescriptorAndroidX86_64.Id)
                     .WithLocation("Project/Player")

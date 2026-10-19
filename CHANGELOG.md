@@ -4,6 +4,19 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-10-19
+
+# Fixed
+* Improve detection of Built-in Render Pipeline issues, to avoid raising them on projects that have already migrated to URP.
+* No error displayed when loading the Project Settings rules after installing the package (UUM-154728).
+* Don't advise downgrades of the Project Auditor packages (UUM-155499).
+* Only flag ArrayPool<T>.Return when the clear parameter is false (only when using MSBuild analysis in Unity 6.7 or newer).
+* Don't report one-off allocations in the Allocation Analyzer (only when using MSBuild analysis in Unity 6.7 or newer).
+* Don't report boxing in cases where CoreCLR will optimize it away (only when using MSBuild analysis in Unity 6.7 or newer).
+
+# Added
+* Report usage of Thread.Suspend and Thread.Resume when migrating to CoreCLR.
+
 ## [3.0.0] - 2026-09-22
 
 # Added

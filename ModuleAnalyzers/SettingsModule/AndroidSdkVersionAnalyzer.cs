@@ -35,7 +35,7 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
 
         public override IEnumerable<ReportItem> Analyze(SettingsAnalysisContext context)
         {
-            if (k_Descriptor_6000_5.IsSupported(context.Params))
+            if (context.IsDescriptorEnabled(k_Descriptor_6000_5))
             {
                 var minSdk = (int)PlayerSettings.Android.minSdkVersion;
                 if (minSdk > 0 && minSdk < k_MinimumSupportedApiLevel_6000_5)

@@ -84,21 +84,21 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
 
         public override IEnumerable<ReportItem> Analyze(SettingsAnalysisContext context)
         {
-            if (k_DeprecationDescriptor.IsSupported(context.Params))
-            {
-                yield return context.CreateIssue(IssueCategory.ProjectSetting, k_DeprecationDescriptor.Id)
-                    .WithLocation("Project/Graphics")
-                    .WithUpgradeProperties("6000.5", "7000.0", null);
-            }
-            if (k_RemovalDescriptor.IsSupported(context.Params))
-            {
-                yield return context.CreateIssue(IssueCategory.ProjectSetting, k_RemovalDescriptor.Id)
-                    .WithLocation("Project/Graphics")
-                    .WithUpgradeProperties("7000.0", null, null);
-            }
-
             if (IsUsingBuiltinRenderPipeline())
             {
+                if (context.IsDescriptorEnabled(k_DeprecationDescriptor))
+                {
+                    yield return context.CreateIssue(IssueCategory.ProjectSetting, k_DeprecationDescriptor.Id)
+                        .WithLocation("Project/Graphics")
+                        .WithUpgradeProperties("6000.5", "7000.0", null);
+                }
+                if (context.IsDescriptorEnabled(k_RemovalDescriptor))
+                {
+                    yield return context.CreateIssue(IssueCategory.ProjectSetting, k_RemovalDescriptor.Id)
+                        .WithLocation("Project/Graphics")
+                        .WithUpgradeProperties("7000.0", null, null);
+                }
+
                 if (IsMixedStandardShaderQuality(context.Params.Platform))
                 {
                     yield return context.CreateIssue(IssueCategory.ProjectSetting, k_ShaderQualityDescriptor.Id)
@@ -119,7 +119,19 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
 
         static bool IsUsingBuiltinRenderPipeline()
         {
-            return GraphicsSettings.defaultRenderPipeline == null;
+            var defaultRenderPipeline = GraphicsSettings.defaultRenderPipeline;
+            var qualitySettingsCount = QualitySettings.count;
+            if (qualitySettingsCount == 0)
+                return defaultRenderPipeline == null;
+
+            for (var i = 0; i < qualitySettingsCount; i++)
+            {
+                var asset = QualitySettings.GetRenderPipelineAssetAt(i);
+                if (asset == null && defaultRenderPipeline == null)
+                    return true;
+            }
+
+            return false;
         }
 
         internal static bool IsMixedStandardShaderQuality(BuildTarget platform)

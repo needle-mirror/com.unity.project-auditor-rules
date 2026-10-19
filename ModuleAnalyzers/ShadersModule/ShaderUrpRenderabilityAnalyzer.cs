@@ -9,13 +9,10 @@ using UnityEngine.Rendering;
 
 namespace Unity.ProjectAuditorRules.ShadersModuleAnalyzers
 {
-    // Capability-based BiRP -> URP migration rule: flags a shader that has NO pass the Universal Render
-    // Pipeline can render. URP draws only passes whose LightMode tag is in a fixed set (SRPDefaultUnlit /
-    // UniversalForward / ...), and only from subshaders it selects (untagged, or tagged
-    // RenderPipeline = UniversalPipeline). It reads compiled pass/subshader tags (so it also covers Shader Graphs).
     internal class ShaderUrpRenderabilityAnalyzer : ShaderModuleAnalyzer
     {
         internal const string PAA5003 = nameof(PAA5003);
+        internal const string PAA5004 = nameof(PAA5004);
 
         // LightMode pass tag values that URP's default (built-in) renderer draws. Includes the LWRP-era
         // "LightweightForward", which URP still draws for backward compatibility. This does NOT cover passes
@@ -33,6 +30,25 @@ namespace Unity.ProjectAuditorRules.ShadersModuleAnalyzers
             "LightweightForward",
         };
 
+        // Legacy BiRP LightMode pass tags that have no direct URP equivalent.
+        static readonly HashSet<string> k_LegacyLightModeTags = new HashSet<string>(new[]
+        {
+            "ForwardBase",
+            "ForwardAdd",
+            "Deferred",
+            "Vertex",
+            "VertexLM",
+            "VertexLMRGBM",
+            "Always"
+        }, StringComparer.OrdinalIgnoreCase);
+
+        // Returns the canonical (conventionally-cased) spelling from k_LegacyLightModeTags matching
+        // lightModeName case-insensitively, or null if it isn't one of them.
+        static string FindCanonicalLegacyLightModeTag(string lightModeName)
+        {
+            return k_LegacyLightModeTags.TryGetValue(lightModeName, out var canonical) ? canonical : null;
+        }
+
         internal static readonly Descriptor k_UrpRenderabilityDescriptor = new Descriptor
             (
             PAA5003,
@@ -42,22 +58,44 @@ namespace Unity.ProjectAuditorRules.ShadersModuleAnalyzers
             "If using URP, convert or rewrite the shader for URP, for example as a Shader Graph or a URP-compatible shader. If the shader is not used with URP, no change is required."
             )
         {
-            MessageFormat = "Shader '{0}' has no URP-compatible pass and would render with the URP error shader",
+            MessageFormat = "Shader '{0}' has no URP-compatible pass and would render with the URP error shader{1}",
 #if UNITY_6000_7_OR_NEWER
             DocumentationUrl = MigrationToURPUtilities.DocumentationUrl
 #endif
         };
 
+        internal static readonly Descriptor k_UnreachableBirpFallbackDescriptor = new Descriptor
+            (
+            PAA5004,
+            "Shader has a Built-in Render Pipeline pass that URP never draws",
+            Areas.MigrationToURP,
+            "This shader has a pass tagged with a legacy Built-in Render Pipeline LightMode (for example <b>ForwardBase</b>) that the Universal Render Pipeline " +
+            "never draws - either because it sits in a SubShader positioned after the one URP selects (URP never evaluates one past the one it selects), or " +
+            "because it is a stray leftover pass alongside a working one in the SubShader URP does select. This is not a URP compatibility problem, but the " +
+            "pass is dead code that can be removed once the project no longer needs to support the Built-in Render Pipeline.",
+            "If the pass is the SubShader's only content, remove the whole SubShader; if the SubShader also contains a working URP pass, remove only the " +
+            "legacy-tagged pass instead - removing the whole SubShader in that case would also delete the working pass."
+            )
+        {
+            MessageFormat = "Shader '{0}' has a Built-in Render Pipeline pass tagged '{1}' that URP never draws{2}",
+            DefaultSeverity = Severity.Minor,
+#if UNITY_6000_7_OR_NEWER
+            DocumentationUrl = MigrationToURPUtilities.DocumentationUrl
+#endif
+        };
+
+        const string k_LightModeTagName = "LightMode";
+        const string k_RenderPipelineTagName = "RenderPipeline";
+        const string k_UniversalPipelineTagValue = "UniversalPipeline";
+
         public override void Initialize(Action<Descriptor> registerDescriptor)
         {
             registerDescriptor(k_UrpRenderabilityDescriptor);
+            registerDescriptor(k_UnreachableBirpFallbackDescriptor);
         }
 
         public override IEnumerable<ReportItem> Analyze(ShaderAnalysisContext context)
         {
-            if (!k_UrpRenderabilityDescriptor.IsSupported(context.Params))
-                yield break;
-
             var shader = context.Shader;
             if (shader == null)
                 yield break;
@@ -73,63 +111,138 @@ namespace Unity.ProjectAuditorRules.ShadersModuleAnalyzers
             if (ShaderUtil.ShaderHasError(shader))
                 yield break;
 
-            if (!IsRenderableByUrp(shader))
+            // Computed once and shared by both rules below - see the class comment for what this means.
+            var selectedSubshaderIndex = FindUrpSelectedSubshaderIndex(shader);
+            var isRenderable = IsRenderableByUrp(shader, selectedSubshaderIndex, out var legacyLightModeTag);
+
+            if (context.IsDescriptorEnabled(k_UrpRenderabilityDescriptor) && !isRenderable)
             {
+                var legacyTagSuffix = string.IsNullOrEmpty(legacyLightModeTag)
+                    ? string.Empty
+                    : $" (found legacy pass tag '{legacyLightModeTag}')";
+
                 yield return context.CreateIssue(IssueCategory.AssetIssue,
-                    k_UrpRenderabilityDescriptor.Id, shader.name)
+                    k_UrpRenderabilityDescriptor.Id, shader.name, legacyTagSuffix)
                     .WithLocation(context.AssetPath);
+            }
+
+            if (context.IsDescriptorEnabled(k_UnreachableBirpFallbackDescriptor))
+            {
+                // A legacy pass tag in the selected SubShader itself is only worth a separate cleanup note
+                // when that SubShader is otherwise renderable - if it isn't, PAA5003 already names the tag
+                // above. A stray legacy pass sitting alongside a working one is dead code too, just like one
+                // in a later SubShader: URP never draws it either way.
+                var unreachableLegacyTag = FindUnreachableLegacyFallbackTag(shader, selectedSubshaderIndex,
+                    includeSelectedSubshader: isRenderable, out var foundInSelectedSubshader);
+                if (!string.IsNullOrEmpty(unreachableLegacyTag))
+                {
+                    // Removing the whole SubShader is only safe advice when the tagged pass is the only thing
+                    // in it - if it's sharing the selected SubShader with a working pass, that pass would be
+                    // deleted too.
+                    var cleanupAdvice = foundInSelectedSubshader
+                        ? " (alongside a working pass in the same SubShader - remove only this pass)"
+                        : " (in a SubShader URP never reaches - the whole SubShader can be removed)";
+
+                    yield return context.CreateIssue(IssueCategory.AssetIssue,
+                        k_UnreachableBirpFallbackDescriptor.Id, shader.name, unreachableLegacyTag, cleanupAdvice)
+                        .WithLocation(context.AssetPath);
+                }
             }
         }
 
-        // True if the subshader URP would select has a pass URP draws. URP renders exactly ONE subshader: the
-        // first one (in declaration order) whose RenderPipeline tag is "UniversalPipeline" or absent; a subshader
-        // tagged for another pipeline (e.g. HDRenderPipeline) is skipped. URP does not combine passes across
-        // subshaders, so only that first selectable subshader decides the result - if it has no URP pass the
-        // shader draws as the error shader even when a later subshader would have carried one. Within the selected
-        // subshader, an untagged pass (LightMode == none) is treated by URP as SRPDefaultUnlit for backward
-        // compatibility, so it counts as renderable. The check reads the shader's declared tags, not the active
-        // pipeline (so it works when auditing a Built-in project for URP readiness); it does not model GPU or
-        // Shader LOD support, which can also influence which subshader URP finally selects.
-        static bool IsRenderableByUrp(Shader shader)
+        // Returns the index of the SubShader URP would select (the first one, in declaration order, whose
+        // RenderPipeline tag is absent or UniversalPipeline), or -1 if none is eligible.
+        internal static int FindUrpSelectedSubshaderIndex(Shader shader)
         {
-            const string k_LightModeTagName = "LightMode";
-            const string k_RenderPipelineTagName = "RenderPipeline";
-            const string k_UniversalPipelineTagValue = "UniversalPipeline";
-
             // Built here (analysis time), not in a static initializer - see k_UrpLightModeTagNames.
             var renderPipelineTag = new ShaderTagId(k_RenderPipelineTagName);
-            var lightModeTag = new ShaderTagId(k_LightModeTagName);
 
             for (int subshaderIndex = 0; subshaderIndex < shader.subshaderCount; subshaderIndex++)
             {
                 var renderPipeline = shader.FindSubshaderTagValue(subshaderIndex, renderPipelineTag);
-                if (renderPipeline != ShaderTagId.none && renderPipeline.name != k_UniversalPipelineTagValue)
-                    continue;
+                if (renderPipeline == ShaderTagId.none ||
+                    string.Equals(renderPipeline.name, k_UniversalPipelineTagValue, StringComparison.OrdinalIgnoreCase))
+                    return subshaderIndex;
+            }
 
-                // First subshader URP can select. URP renders this one and looks no further, so its passes alone
-                // decide renderability.
+            return -1;
+        }
+
+        // True if the subshader URP would select (selectedSubshaderIndex, or none if < 0) has a pass URP
+        // draws. Within that subshader, an untagged pass (LightMode == none) is treated by URP as
+        // SRPDefaultUnlit for backward compatibility, so it counts as renderable. This does not model GPU or
+        // Shader LOD support, which can also influence which subshader URP finally selects.
+        static bool IsRenderableByUrp(Shader shader, int selectedSubshaderIndex, out string legacyLightModeTag)
+        {
+            legacyLightModeTag = null;
+
+            if (selectedSubshaderIndex < 0)
+                return false;
+
+            var lightModeTag = new ShaderTagId(k_LightModeTagName);
+
+            int passCount = shader.GetPassCountInSubshader(selectedSubshaderIndex);
+            for (int passIndex = 0; passIndex < passCount; passIndex++)
+            {
+                var lightMode = shader.FindPassTagValue(selectedSubshaderIndex, passIndex, lightModeTag);
+
+                // Untagged pass -> SRPDefaultUnlit (legacy) -> URP renders it.
+                if (lightMode == ShaderTagId.none)
+                    return true;
+
+                var lightModeName = lightMode.name;
+                for (int t = 0; t < k_UrpLightModeTagNames.Length; t++)
+                {
+                    if (string.Equals(lightModeName, k_UrpLightModeTagNames[t], StringComparison.OrdinalIgnoreCase))
+                        return true;
+                }
+
+                if (legacyLightModeTag == null)
+                    legacyLightModeTag = FindCanonicalLegacyLightModeTag(lightModeName);
+            }
+
+            // The selected subshader has no pass URP draws -> error shader.
+            return false;
+        }
+
+        // Returns the first legacy LightMode tag value found in a SubShader URP never draws a pass from:
+        // either a later SubShader (URP never evaluates one past the one it selects), or - when
+        // includeSelectedSubshader is true - a stray pass in the selected SubShader itself, alongside the
+        // pass(es) that make it otherwise renderable. Either way the tagged pass is dead code, not a URP
+        // compatibility problem. foundInSelectedSubshader distinguishes the two cases, since only the first
+        // (a fully unreachable later SubShader) is safe to remove in its entirety - the second shares its
+        // SubShader with a pass that is still in use.
+        static string FindUnreachableLegacyFallbackTag(Shader shader, int selectedSubshaderIndex, bool includeSelectedSubshader,
+            out bool foundInSelectedSubshader)
+        {
+            foundInSelectedSubshader = false;
+
+            if (selectedSubshaderIndex < 0)
+                return null;
+
+            var lightModeTag = new ShaderTagId(k_LightModeTagName);
+            var startSubshaderIndex = includeSelectedSubshader ? selectedSubshaderIndex : selectedSubshaderIndex + 1;
+
+            for (int subshaderIndex = startSubshaderIndex; subshaderIndex < shader.subshaderCount; subshaderIndex++)
+            {
                 int passCount = shader.GetPassCountInSubshader(subshaderIndex);
                 for (int passIndex = 0; passIndex < passCount; passIndex++)
                 {
                     var lightMode = shader.FindPassTagValue(subshaderIndex, passIndex, lightModeTag);
-
-                    // Untagged pass -> SRPDefaultUnlit (legacy) -> URP renders it.
                     if (lightMode == ShaderTagId.none)
-                        return true;
+                        continue;
 
                     var lightModeName = lightMode.name;
-                    for (int t = 0; t < k_UrpLightModeTagNames.Length; t++)
+                    var canonical = FindCanonicalLegacyLightModeTag(lightModeName);
+                    if (canonical != null)
                     {
-                        if (lightModeName == k_UrpLightModeTagNames[t])
-                            return true;
+                        foundInSelectedSubshader = subshaderIndex == selectedSubshaderIndex;
+                        return canonical;
                     }
                 }
-
-                // The selected subshader has no pass URP draws -> error shader. Do not consider later subshaders.
-                return false;
             }
 
-            return false;
+            return null;
         }
     }
 }

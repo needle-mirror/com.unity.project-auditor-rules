@@ -2976,6 +2976,13 @@
             "removedIn": ""
         },
         {
+            "type": "Unity.Entities.Editor.HierarchySearchProvider",
+            "description": "The standalone Entities Hierarchy has been replaced by the integrated Editor Hierarchy. HierarchySearchProvider is deprecated and will be removed. First deprecated in Unity 6.7.",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "Unity.Entities.EntityCommandBuffer.AddComponent(EntityQuery)",
             "description": "This method now takes an extra parameter to control when the query is evaluated. To preserve the current semantics, use EntityQueryCaptureMode.AtRecord (RemovedAfter Entities 2.0)",
             "warningSince": "6000.4",
@@ -6994,6 +7001,20 @@
             "removedIn": ""
         },
         {
+            "type": "Unity.ProjectAuditor.Editor.IssueCategory.BuildFile",
+            "description": "Build analysis has moved to the Build Analysis window.",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "Unity.ProjectAuditor.Editor.IssueCategory.BuildStep",
+            "description": "Build analysis has moved to the Build Analysis window.",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "Unity.ProjectAuditor.Editor.IssueCategory.DomainReload",
             "description": "Domain Reload issues are now reported in the Code category. Use Code instead (UnityUpgradable) -> Code",
             "warningSince": "",
@@ -10837,9 +10858,23 @@
             "removedIn": ""
         },
         {
+            "type": "UnityEditor.CameraEditor.Settings.DrawOcclusionCulling()",
+            "description": "CameraEditor.Settings.DrawOcclusionCulling is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "UnityEditor.CameraEditor.Settings.DrawVR()",
             "description": "This API is deprecated and will be removed. Please use XRManagement package instead.",
             "warningSince": "6000.0",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEditor.CameraEditor.Settings.occlusionCulling",
+            "description": "CameraEditor.Settings.occlusionCulling is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
             "errorSince": "",
             "removedIn": ""
         },
@@ -26146,6 +26181,13 @@
             "removedIn": ""
         },
         {
+            "type": "UnityEditor.SceneView.CameraSettings.occlusionCulling",
+            "description": "SceneView.CameraSettings.occlusionCulling is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "UnityEditor.SceneView.OnGUI()",
             "description": "OnGUI has been deprecated. Use OnSceneGUI instead.",
             "warningSince": "6000.0",
@@ -27196,9 +27238,37 @@
             "removedIn": ""
         },
         {
+            "type": "UnityEditor.StaticEditorFlags.OccludeeStatic",
+            "description": "StaticEditorFlags.OccludeeStatic is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEditor.StaticEditorFlags.OccluderStatic",
+            "description": "StaticEditorFlags.OccluderStatic is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "UnityEditor.StaticEditorFlags.OffMeshLinkGeneration",
             "description": "Enum member StaticEditorFlags.OffMeshLinkGeneration has been deprecated. You can now use NavMeshBuilder.CollectSources() and NavMeshBuildMarkup to nominate the objects that will generate Off-Mesh Links.",
             "warningSince": "6000.0",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEditor.StaticOcclusionCulling",
+            "description": "StaticOcclusionCulling is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEditor.StaticOcclusionCullingVisualization",
+            "description": "StaticOcclusionCullingVisualization is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
             "errorSince": "",
             "removedIn": ""
         },
@@ -32899,6 +32969,13 @@
             "warningSince": "",
             "errorSince": "6000.0",
             "removedIn": "6000.1"
+        },
+        {
+            "type": "UnityEngine.Camera.useOcclusionCulling",
+            "description": "Camera.useOcclusionCulling is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
         },
         {
             "type": "UnityEngine.Canvas.GetDefaultCanvasTextMaterial()",
@@ -41581,6 +41658,20 @@
             "removedIn": ""
         },
         {
+            "type": "UnityEngine.OcclusionArea",
+            "description": "Occlusion Area is deprecated. Use GPU Occlusion Culling instead. #from(6000.7)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEngine.OcclusionPortal",
+            "description": "Occlusion Portal is deprecated. Use GPU Occlusion Culling instead. #from(6000.7)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "UnityEngine.ParticlePhysicsExtensions.GetCollisionEvents(ParticleSystem,GameObject,ParticleCollisionEvent[])",
             "description": "GetCollisionEvents function using ParticleCollisionEvent[] is deprecated. Use List<ParticleCollisionEvent> instead.",
             "warningSince": "6000.0",
@@ -44143,6 +44234,13 @@
             "removedIn": ""
         },
         {
+            "type": "UnityEngine.Renderer.allowOcclusionWhenDynamic",
+            "description": "Renderer.allowOcclusionWhenDynamic is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "UnityEngine.Renderer.castShadows",
             "description": "Use shadowCastingMode instead.",
             "warningSince": "6000.0",
@@ -44517,6 +44615,13 @@
             "type": "UnityEngine.Rendering.CoreUtils.gameObjectMenuPriority",
             "description": "obsoletePriorityMessage",
             "warningSince": "6000.0",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEngine.Rendering.CullingOptions.OcclusionCull",
+            "description": "CullingOptions.OcclusionCull is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
             "errorSince": "",
             "removedIn": ""
         },
@@ -45004,6 +45109,13 @@
             "removedIn": ""
         },
         {
+            "type": "UnityEngine.Rendering.HighDefinition.CameraSettings.Culling.useOcclusionCulling",
+            "description": "CameraSettings.Culling.useOcclusionCulling is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "UnityEngine.Rendering.HighDefinition.CameraSettings.Frustum.@default",
             "description": "Use Frustum.NewDefault() instead. #from(2019.3)",
             "warningSince": "6000.0",
@@ -45028,6 +45140,13 @@
             "type": "UnityEngine.Rendering.HighDefinition.CameraSettings.m_ObsoleteRenderingPath",
             "description": "For data migration. #from(2022.1)",
             "warningSince": "6000.0",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEngine.Rendering.HighDefinition.CameraSettingsFields.cullingUseOcclusionCulling",
+            "description": "CameraSettingsFields.cullingUseOcclusionCulling is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
             "errorSince": "",
             "removedIn": ""
         },
@@ -47807,6 +47926,34 @@
             "type": "UnityEngine.Rendering.RenderPipelineManager.endFrameRendering",
             "description": "endFrameRendering is deprecated. Use endContextRendering instead. #from 2023.3",
             "warningSince": "6000.0",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEngine.Rendering.ScriptableCullingParameters.accurateOcclusionThreshold",
+            "description": "ScriptableCullingParameters.accurateOcclusionThreshold is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEngine.Rendering.ScriptableCullingParameters.cullingJobsLowerLimit",
+            "description": "ScriptableCullingParameters.cullingJobsLowerLimit is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEngine.Rendering.ScriptableCullingParameters.cullingJobsUpperLimit",
+            "description": "ScriptableCullingParameters.cullingJobsUpperLimit is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEngine.Rendering.ScriptableCullingParameters.maximumPortalCullingJobs",
+            "description": "ScriptableCullingParameters.maximumPortalCullingJobs is deprecated and will be removed in a future release. Consider migrating to GPU Occlusion Culling where your target platform supports it. #from(6000.7)",
+            "warningSince": "6000.7",
             "errorSince": "",
             "removedIn": ""
         },

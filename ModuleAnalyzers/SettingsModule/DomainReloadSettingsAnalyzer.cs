@@ -63,12 +63,12 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
                 yield break;
 
             // Choose appropriate wording based on Unity version.
-            if (k_DomainReloadDescriptorOld.IsSupported(context.Params))
+            if (context.IsDescriptorEnabled(k_DomainReloadDescriptorOld))
             {
                 yield return context.CreateIssue(IssueCategory.ProjectSetting, k_DomainReloadDescriptorOld.Id)
                     .WithLocation("Project/Editor");
             }
-            if (k_DomainReloadDescriptor.IsSupported(context.Params))
+            if (context.IsDescriptorEnabled(k_DomainReloadDescriptor))
             {
                 yield return context.CreateIssue(IssueCategory.ProjectSetting, k_DomainReloadDescriptor.Id)
                     .WithLocation("Project/Editor");

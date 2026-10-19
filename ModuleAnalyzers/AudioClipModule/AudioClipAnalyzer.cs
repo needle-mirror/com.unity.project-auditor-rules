@@ -9,7 +9,7 @@ namespace Unity.ProjectAuditorRules.AudioClipModuleAnalyzers
 {
     class AudioClipAnalyzer : AudioClipModuleAnalyzer
     {
-        internal const string PAA4000 = nameof(PAA4000);    // Long AudioClips which aren’t set to streaming
+        internal const string PAA4000 = nameof(PAA4000);    // Very long AudioClips which aren’t set to streaming
         internal const string PAA4001 = nameof(PAA4001);    // Very small ACs (uncompressed size <200KB) that ARE set to streaming. These should probably be Decompress on Load
         internal const string PAA4002 = nameof(PAA4002);    // Stereo clips not forced to Mono on mobile platforms
         internal const string PAA4003 = nameof(PAA4003);    // Stereo clips not forced to Mono if they’re not streaming audio (only non-diagetic music should be stereo, really)
@@ -24,28 +24,13 @@ namespace Unity.ProjectAuditorRules.AudioClipModuleAnalyzers
 
         internal static readonly Descriptor k_AudioLongClipDoesNotStreamDescriptor = new Descriptor(
             PAA4000,
-            "Audio: Long AudioClip is not set to Streaming",
+            "Audio: Very long AudioClip is not set to Streaming",
             Areas.Memory,
-            "The AudioClip has a runtime memory footprint larger than the streaming buffer size of 200KB, but its <b>Load Type</b> is not set to <b>Streaming</b>. Storing the whole clip in memory rather than streaming it may be an inefficient use of memory.",
-            "Consider setting <b>Load Type</b> to <b>Streaming</b> in the AudioClip Import Settings."
+            "The AudioClip has a very large runtime memory footprint, but its <b>Load Type</b> is not set to <b>Streaming</b>. Holding a very long clip entirely in memory may be an inefficient use of memory.",
+            "If this clip is a long, unique sound that plays infrequently (for example music, long ambience or dialogue), consider setting <b>Load Type</b> to <b>Streaming</b> in the AudioClip Import Settings. Streaming has a per-clip runtime cost (a streaming buffer, disk I/O and a start-up delay), so it is a poor fit for short, frequently-played or latency-sensitive clips such as sound effects; for those, use <b>Compressed In Memory</b> or <b>Decompress On Load</b> instead."
         )
         {
-            MessageFormat = "AudioClip '{0}' Load Type is not set to Streaming",
-            Fixer = (issue, analysisParams) =>
-            {
-                var audioImporter = AssetImporter.GetAtPath(issue.RelativePath) as AudioImporter;
-                if (audioImporter != null)
-                {
-                    var platform = analysisParams.Platform.ToString();
-                    var sampleSettings = audioImporter.GetOverrideSampleSettings(platform);
-                    sampleSettings.loadType = AudioClipLoadType.Streaming;
-                    audioImporter.SetOverrideSampleSettings(platform, sampleSettings);
-                    audioImporter.SaveAndReimport();
-                    return true;
-                }
-
-                return false;
-            }
+            MessageFormat = "AudioClip '{0}' is very long and Load Type is not set to Streaming",
         };
 
         internal static readonly Descriptor k_AudioShortClipStreamsDescriptor = new Descriptor(
@@ -63,11 +48,14 @@ namespace Unity.ProjectAuditorRules.AudioClipModuleAnalyzers
             PAA4002,
             "Audio: AudioClip is stereo",
             Areas.Memory,
-            "The audio source asset is in stereo, and <b>Force To Mono</b> is not enabled in the AudioClip Import Settings. Stereo clips are generally not needed on mobile platforms, and have double the memory footprint of mono clips.",
-            "Tick the <b>Force To Mono</b> checkbox in the AudioClip Import Settings."
+            "The audio source asset is in stereo, and <b>Force To Mono</b> is not enabled in the AudioClip Import Settings. Stereo clips are generally not needed for sound effects on mobile platforms, and have double the memory footprint of mono clips.",
+            "If this clip is a sound effect, tick the <b>Force To Mono</b> checkbox in the AudioClip Import Settings. Non-positional music or ambience may legitimately remain stereo."
         )
         {
             MessageFormat = "AudioClip '{0}' is stereo",
+#if UNITY_6000_7_OR_NEWER
+            FixerLabel = "Convert to Mono",
+#endif
             Fixer = (issue, analysisParams) =>
             {
                 var audioImporter = AssetImporter.GetAtPath(issue.RelativePath) as AudioImporter;
@@ -96,6 +84,9 @@ namespace Unity.ProjectAuditorRules.AudioClipModuleAnalyzers
         )
         {
             MessageFormat = "AudioClip '{0}' is stereo",
+#if UNITY_6000_7_OR_NEWER
+            FixerLabel = "Convert to Mono",
+#endif
             Fixer = (issue, analysisParams) =>
             {
                 var audioImporter = AssetImporter.GetAtPath(issue.RelativePath) as AudioImporter;
@@ -115,7 +106,7 @@ namespace Unity.ProjectAuditorRules.AudioClipModuleAnalyzers
             "Audio: AudioClip is set to Decompress On Load",
             Areas.Memory | Areas.LoadTime,
             "The AudioClip is long, and its <b>Load Type</b> is set to <b>Decompress On Load</b>. The clip's memory footprint may be excessive, and decompression may impact load times.",
-            "Consider setting the <b>Load Type</b> to <b>Compressed In Memory</b> or <b>Streaming</b>. If you have concerns about the CPU cost of decompressing <b>Compressed In Memory</b> clips for playback, consider a format which is fast to decompress, such as <b>ADPCM</b>."
+            "Setting the <b>Load Type</b> to <b>Compressed In Memory</b> reduces the memory footprint but costs CPU time, because the clip is decompressed every time it is played; keep <b>Decompress On Load</b> if the clip is played frequently and the memory is acceptable. Only very long, unique clips (such as music) should use <b>Streaming</b>. If you have concerns about the CPU cost of decompressing <b>Compressed In Memory</b> clips for playback, consider a format which is fast to decompress, such as <b>ADPCM</b>."
         )
         {
             MessageFormat = "AudioClip '{0}' is set to Decompress On Load",
@@ -125,8 +116,8 @@ namespace Unity.ProjectAuditorRules.AudioClipModuleAnalyzers
             PAA4005,
             "Audio: Compressed AudioClip is Compressed In Memory",
             Areas.CPU,
-            "The AudioClip's <b>Load Type</b> is set to <b>Compressed In Memory</b> but the clip is imported with a format that is not trivial to decompress. Decompression will be performed every time the clip is played, and may impact CPU performance.",
-            "If runtime performance is impacted, either set the <b>Load Type</b> to <b>Decompress On Load</b> or set the <b>Compression Format</b> to <b>ADPCM</b>, which is fast to decompress."
+            "The AudioClip's <b>Load Type</b> is set to <b>Compressed In Memory</b> but the clip is imported with a format that is not trivial to decompress. Decompression will be performed every time the clip is played, and may impact CPU performance, particularly for clips that are played frequently.",
+            "If runtime performance is impacted, set the <b>Compression Format</b> to <b>ADPCM</b>, which is fast to decompress, or set the <b>Load Type</b> to <b>Decompress On Load</b> if the clip is small enough that its decompressed memory footprint is acceptable."
         )
         {
             MessageFormat = "AudioClip '{0}' is Compressed In Memory",
@@ -264,8 +255,11 @@ namespace Unity.ProjectAuditorRules.AudioClipModuleAnalyzers
         };
 
 #pragma warning disable CS0649
-        [DiagnosticParameter("StreamingClipThresholdBytes", "Streaming Audio Clip Threshold (Bytes)", "Issues will be raised if (a) clips larger than this are not streaming and (b) clips smaller than this are streaming.  'Runtime Size (Estimate)' is used for this comparison.", 1 * (64000 + (int)(1.6 * 48000 * 2)) + 694)]
+        [DiagnosticParameter("StreamingClipThresholdBytes", "Streaming Audio Clip Threshold (Bytes)", "Issues will be raised if clips smaller than this are streaming.  'Runtime Size (Estimate)' is used for this comparison.", 1 * (64000 + (int)(1.6 * 48000 * 2)) + 694)]
         int m_StreamingClipThresholdBytes;
+
+        [DiagnosticParameter("VeryLongClipStreamingThresholdBytes", "Very Long Audio Clip Threshold (Bytes)", "Issues will be raised if clips larger than this are not streaming. 'Runtime Size (Estimate)' is used for this comparison. The default is approximately 30 seconds of 44.1kHz 16-bit stereo audio.", 5 * 1024 * 1024)]
+        int m_VeryLongClipStreamingThresholdBytes;
 
         [DiagnosticParameter("LongDecompressedClipThresholdBytes","Decompressed Audio Clip Threshold (Bytes)", "Maximum 'Runtime Size (Estimate)' of a decompressed audio clip (in Bytes) before an Issue is created.", 200 * 1024)]
         int m_LongDecompressedClipThresholdBytes;
@@ -307,7 +301,7 @@ namespace Unity.ProjectAuditorRules.AudioClipModuleAnalyzers
             if (sourceFileExtension.StartsWith("."))
                 sourceFileExtension = sourceFileExtension.Substring(1);
 
-            if (context.RuntimeSize > m_StreamingClipThresholdBytes && !isStreaming)
+            if (context.RuntimeSize > m_VeryLongClipStreamingThresholdBytes && !isStreaming)
             {
                 yield return context.CreateIssue(
                     IssueCategory.AssetIssue, k_AudioLongClipDoesNotStreamDescriptor.Id, clipName)
@@ -323,7 +317,7 @@ namespace Unity.ProjectAuditorRules.AudioClipModuleAnalyzers
 
             if (audioClip.channels > 1 && context.Importer.forceToMono == false)
             {
-                if (k_AudioStereoClipsOnMobileDescriptor.IsSupported(context.Params))
+                if (context.IsDescriptorEnabled(k_AudioStereoClipsOnMobileDescriptor))
                 {
                     yield return context.CreateIssue(
                         IssueCategory.AssetIssue, k_AudioStereoClipsOnMobileDescriptor.Id, clipName)
@@ -354,7 +348,7 @@ namespace Unity.ProjectAuditorRules.AudioClipModuleAnalyzers
                     .WithLocation(assetPath);
             }
 
-            if (k_AudioLargeCompressedMobileDescriptor.IsSupported(context.Params) &&
+            if (context.IsDescriptorEnabled(k_AudioLargeCompressedMobileDescriptor) &&
                 context.ImportedSize > m_LongCompressedMobileClipThresholdBytes &&
                 sampleSettings.compressionFormat != AudioCompressionFormat.PCM &&
                 sampleSettings.compressionFormat != AudioCompressionFormat.ADPCM &&

@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using Unity.ProjectAuditor.Editor;
 using Unity.ProjectAuditor.Editor.Core;
+using Unity.ProjectAuditor.Editor.Modules;
 using UnityEditor;
 using UnityEngine;
+
 #if UNITY_6000_6_OR_NEWER
 using Unity.ProjectAuditor.Editor.AssetAnalysis;
 #endif
