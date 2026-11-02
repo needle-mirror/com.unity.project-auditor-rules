@@ -4,6 +4,13 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2026-11-02
+
+# Added
+* Recommendations for Unity analyzer diagnostics, including Lifecycle API issues (UAL0010 to UAL0015) (UUM-151406).
+* Report iOS projects whose Target minimum iOS Version is below 16.0, the minimum supported by Unity 6.7.
+* Latest obsolete API information from Unity 6.7.
+
 ## [3.1.0] - 2026-10-19
 
 # Fixed

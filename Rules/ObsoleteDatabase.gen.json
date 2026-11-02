@@ -610,6 +610,20 @@
             "removedIn": ""
         },
         {
+            "type": "K4os.Hash.xxHash.XXH32.Update(byte*,int)",
+            "description": "Use void* overload",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "K4os.Hash.xxHash.XXH64.Update(byte*,int)",
+            "description": "Use void* overload, this one will be removed in next version.",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "KtxUnity.BasisUniversalTexture.Open(NativeSlice<byte>)",
             "description": "Use the overload that accepts a NativeArray<byte>.ReadOnly data",
             "warningSince": "6000.7",
@@ -2346,6 +2360,13 @@
             "removedIn": ""
         },
         {
+            "type": "Unity.Collections.NativeArrayExtensions.Contains(ReadOnlySpan<T>,U)",
+            "description": "'Contains(ReadOnlySpan<T>, U)' has been deprecated; use 'System.MemoryExtensions.Contains' or 'IndexOf' instead.",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "Unity.Collections.NativeList.implicit operator NativeArray<T>(NativeList<T>)",
             "description": "Implicit cast from `NativeList<T>` to `NativeArray<T>` has been deprecated; Use '.AsArray()' method to do explicit cast instead.",
             "warningSince": "6000.4",
@@ -2587,6 +2608,34 @@
             "type": "Unity.Entities.ArchetypeChunk.SetComponentEnabled(ComponentTypeHandle<T>,int,bool)",
             "description": "The typeHandle argument should now be passed by ref. (RemovedAfter Entities 1.0)",
             "warningSince": "6000.4",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "Unity.Entities.BlobAssetReference.TryRead(U,int,BlobAssetReference<T>)",
+            "description": "BlobAssetReference<T>.TryRead has moved to BlobAssetReferenceIO<T>.TryRead.",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "Unity.Entities.BlobAssetReference.TryRead(string,int,BlobAssetReference<T>)",
+            "description": "BlobAssetReference<T>.TryRead has moved to BlobAssetReferenceIO<T>.TryRead.",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "Unity.Entities.BlobAssetReference.Write(BlobBuilder,string,int)",
+            "description": "BlobAssetReference<T>.Write has moved to BlobAssetReferenceIO<T>.Write.",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "Unity.Entities.BlobAssetReference.Write(U,BlobBuilder,int)",
+            "description": "BlobAssetReference<T>.Write has moved to BlobAssetReferenceIO<T>.Write.",
+            "warningSince": "6000.7",
             "errorSince": "",
             "removedIn": ""
         },
@@ -8093,6 +8142,20 @@
             "removedIn": ""
         },
         {
+            "type": "Unity.U2D.Physics.PhysicsMath.GetRelativeMatrix2D(Matrix4x4,Matrix4x4,PhysicsWorld,bool)",
+            "description": "PhysicsMath.GetRelativeMatrix2D with useScale is deprecated, useScale has no effect. Please use the overload without useScale, or PhysicsMath.GetRelativePose2D to build a matrix with the scale you need.",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "Unity.U2D.Physics.PhysicsMath.GetRelativeMatrix2D(Matrix4x4,Matrix4x4,TransformPlane,TransformPlaneCustom,bool)",
+            "description": "PhysicsMath.GetRelativeMatrix2D with useScale is deprecated, useScale has no effect. Please use the overload without useScale, or PhysicsMath.GetRelativePose2D to build a matrix with the scale you need.",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "Unity.U2D.Physics.PhysicsQuery.CastResult.hit",
             "description": "CastResult.hit is deprecated, please use CastResult.isValid instead. (UnityUpgradable) -> isValid",
             "warningSince": "6000.5",
@@ -8184,6 +8247,13 @@
             "removedIn": ""
         },
         {
+            "type": "Unity.U2D.Physics.PhysicsWorld.SetElementDepth3D(Vector3)",
+            "description": "PhysicsWorld.SetElementDepth3D is deprecated, please use PhysicsWorld.SetDrawDepth3D instead. (UnityUpgradable) -> SetDrawDepth3D(UnityEngine.Vector3)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "Unity.U2D.Physics.PhysicsWorld.TransformPlaneCustom.TransformPlaneCustom(Vector3,Vector3,float)",
             "description": "PhysicsWorld.TransformPlaneCustom(translate, rotate, scale) is deprecated, please use PhysicsWorld.TransformPlaneCustom(translate, rotate) instead. The scale is ignored: it scaled the drawing of a shape but also the geometry an authoring component built from a Transform, so a shape simulated at a different size than it appeared. Scale the authored geometry instead.",
             "warningSince": "6000.7",
@@ -8257,6 +8327,13 @@
             "type": "Unity.U2D.Physics.PhysicsWorld.drawImpulseScale",
             "description": "PhysicsWorld.drawImpulseScale is deprecated, please use PhysicsWorld.drawForceScale instead. (UnityUpgradable) -> drawForceScale",
             "warningSince": "6000.5",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "Unity.U2D.Physics.PhysicsWorld.elementDepth",
+            "description": "PhysicsWorld.elementDepth is deprecated, please use PhysicsWorld.drawDepth instead. (UnityUpgradable) -> drawDepth",
+            "warningSince": "6000.7",
             "errorSince": "",
             "removedIn": ""
         },
@@ -20147,6 +20224,13 @@
             "removedIn": ""
         },
         {
+            "type": "UnityEditor.Localization.Addressables.AddressableGroupRules.ModuleTablesResolver",
+            "description": "Use ResourceTablesResolver instead.",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "UnityEditor.Localization.Editor.Localization",
             "description": "Localization has been deprecated. Please use UnityEditor.L10n instead",
             "warningSince": "",
@@ -26447,6 +26531,41 @@
             "removedIn": ""
         },
         {
+            "type": "UnityEditor.Search.QueryBlock.arrowOffset",
+            "description": "(no message)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEditor.Search.QueryBlock.arrowRect",
+            "description": "(no message)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEditor.Search.QueryBlock.blockExtraPadding",
+            "description": "(no message)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEditor.Search.QueryBlock.borderRadius",
+            "description": "(no message)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEditor.Search.QueryBlock.valueRect",
+            "description": "(no message)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "UnityEditor.Search.QueryEngine.Parse(string,IQueryHandlerFactory<TData, TQueryHandler, TPayload>)",
             "description": "Parse has been deprecated. Use ParseQuery instead (UnityUpgradable) -> ParseQuery<TQueryHandler, TPayload>(*)",
             "warningSince": "6000.0",
@@ -27879,21 +27998,21 @@
             "description": "Experimental API might be removed in a future version without specific upgrade advice.",
             "warningSince": "",
             "errorSince": "",
-            "removedIn": ""
+            "removedIn": "6000.7"
         },
         {
             "type": "UnityEditor.Tilemaps.Experimental.EntityIdTileUtility.CreateDefaultEntityIdTile()",
             "description": "Experimental API might be removed in a future version without specific upgrade advice.",
             "warningSince": "",
             "errorSince": "",
-            "removedIn": ""
+            "removedIn": "6000.7"
         },
         {
             "type": "UnityEditor.Tilemaps.Experimental.EntityIdTileUtility.DefaultEntityIdTile(Sprite)",
             "description": "Experimental API might be removed in a future version without specific upgrade advice.",
             "warningSince": "",
             "errorSince": "",
-            "removedIn": ""
+            "removedIn": "6000.7"
         },
         {
             "type": "UnityEditor.Tilemaps.GridPaintingToolbar.GridPaintingToolbarFactory",
@@ -33510,6 +33629,20 @@
             "removedIn": ""
         },
         {
+            "type": "UnityEngine.Device.SystemInfo.ProcessorManufacturer",
+            "description": "Use processorManufacturer instead",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEngine.Device.SystemInfo.ProcessorModel",
+            "description": "Use processorModel instead",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "UnityEngine.Diagnostics.PlayerConnection.SendFile(string,byte[])",
             "description": "PlayerConnection.SendFile is no longer supported.",
             "warningSince": "",
@@ -38544,6 +38677,13 @@
         },
         {
             "type": "UnityEngine.Experimental.Rendering.XRLayoutType",
+            "description": "Experimental API might be removed in a future version without specific upgrade advice.",
+            "warningSince": "",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEngine.Experimental.Rendering.XRLayoutType.OnePassOneView",
             "description": "Experimental API might be removed in a future version without specific upgrade advice.",
             "warningSince": "",
             "errorSince": "",
@@ -48287,6 +48427,13 @@
             "removedIn": "6000.4"
         },
         {
+            "type": "UnityEngine.Rendering.Universal.CameraData.upscalingFilter",
+            "description": "upscalingFilter is no longer used #from(6000.3)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "UnityEngine.Rendering.Universal.CapturePass.Execute(ScriptableRenderContext,RenderingData)",
             "description": "DeprecationMessage.CompatibilityScriptingAPIObsolete",
             "warningSince": "6000.0",
@@ -48523,6 +48670,13 @@
             "warningSince": "6000.0",
             "errorSince": "",
             "removedIn": "6000.3"
+        },
+        {
+            "type": "UnityEngine.Rendering.Universal.ImageUpscalingFilter",
+            "description": "ImageUpscalingFilter is no longer used #from(6000.3)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
         },
         {
             "type": "UnityEngine.Rendering.Universal.Internal.AdditionalLightsShadowCasterPass.Configure(CommandBuffer,RenderTextureDescriptor)",
@@ -49911,6 +50065,13 @@
             "removedIn": ""
         },
         {
+            "type": "UnityEngine.Rendering.Universal.StpPostProcessPass",
+            "description": "StpPostProcessPass is replaced by STPIUpscaler #from(6000.3)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "UnityEngine.Rendering.Universal.Tonemapping.IsTileCompatible()",
             "description": "Unused. #from(2023.1)",
             "warningSince": "6000.0",
@@ -50002,6 +50163,13 @@
             "removedIn": "6000.4"
         },
         {
+            "type": "UnityEngine.Rendering.Universal.UniversalCameraData.upscalingFilter",
+            "description": "upscalingFilter is no longer used #from(6000.3)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "UnityEngine.Rendering.Universal.UniversalRenderPipeline.RenderSingleCamera(ScriptableRenderContext,Camera)",
             "description": "RenderSingleCamera is obsolete, please use RenderPipeline.SubmitRenderRequest with UniversalRenderer.SingleCameraRequest as RequestData type. #from(2023.1)",
             "warningSince": "6000.0",
@@ -50065,6 +50233,13 @@
             "removedIn": ""
         },
         {
+            "type": "UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset.m_SelectedUpscalerName",
+            "description": "m_SelectedUpscalerName is replaced by m_UpscalerPriority #from(6000.7)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset.m_ShadowCascades",
             "description": "This is obsolete, please use shadowCascadeCount instead. #from(2021.1)",
             "warningSince": "6000.0",
@@ -50082,6 +50257,13 @@
             "type": "UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset.m_Textures",
             "description": "Moved to UniversalRenderPipelineRuntimeTextures on GraphicsSettings. #from(2023.3)",
             "warningSince": "6000.0",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset.m_UpscalingFilter",
+            "description": "m_UpscalingFilter is replaced by m_SelectedUpscalerName #from(6000.3)",
+            "warningSince": "6000.7",
             "errorSince": "",
             "removedIn": ""
         },
@@ -50158,6 +50340,13 @@
         {
             "type": "UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset.upscalerName",
             "description": "upscalerName is replaced by the upscaler priority list. #from(6000.7)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset.upscalingFilter",
+            "description": "upscalingFilter is replaced by upscalerName #from(6000.3)",
             "warningSince": "6000.7",
             "errorSince": "",
             "removedIn": ""
@@ -50448,6 +50637,13 @@
             "warningSince": "6000.0",
             "errorSince": "",
             "removedIn": "6000.3"
+        },
+        {
+            "type": "UnityEngine.Rendering.Universal.UpscalingFilterSelection",
+            "description": "UpscalingFilterSelection is obsolete. #from(6000.3)",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
         },
         {
             "type": "UnityEngine.Rendering.Universal.Vignette.IsTileCompatible()",
@@ -52025,6 +52221,13 @@
             "removedIn": ""
         },
         {
+            "type": "UnityEngine.TextCore.Text.TextSettings.clearDynamicDataOnBuild",
+            "description": "Has no effect. Set dynamicDataPersistence on each FontAsset instead.",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
             "type": "UnityEngine.TextCore.Text.TextSettings.defaultFontAsset",
             "description": "defaultFontAsset is obsolete and will be removed in a future version.",
             "warningSince": "6000.5",
@@ -52049,6 +52252,13 @@
             "type": "UnityEngine.TextCore.Text.TextSettings.lineBreakingRules",
             "description": "lineBreakingRules is obsolete and will be removed in a future version. It is now support by default with the Advanced Text Generator (ATG).",
             "warningSince": "6000.5",
+            "errorSince": "",
+            "removedIn": ""
+        },
+        {
+            "type": "UnityEngine.TextCore.Text.TextSettings.m_ClearDynamicDataOnBuild",
+            "description": "Has no effect.",
+            "warningSince": "6000.7",
             "errorSince": "",
             "removedIn": ""
         },
@@ -52632,6 +52842,13 @@
             "warningSince": "6000.0",
             "errorSince": "6000.6",
             "removedIn": "6000.7"
+        },
+        {
+            "type": "UnityEngine.UI.Selectable.s_SelectableCount",
+            "description": "Selectable.s_SelectableCount is deprecated. Use Selectable.allSelectableCount instead (UnityUpgradable) -> allSelectableCount",
+            "warningSince": "6000.7",
+            "errorSince": "",
+            "removedIn": ""
         },
         {
             "type": "UnityEngine.UI.StencilMaterial.Add(Material,int)",

@@ -52,7 +52,7 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
             MaximumVersion = "6000.7",
 #if UNITY_6000_7_OR_NEWER
             DocumentationUrl = MigrationToURPUtilities.DocumentationUrl,
-            FixerLabel = "Migrate to URP",
+            FixerLabel = "Review in Converter",
             Fixer = MigrationToURPUtilities.OpenRenderPipelineConverter
 #endif
         };
@@ -68,7 +68,7 @@ namespace Unity.ProjectAuditorRules.SettingsModuleAnalyzers
             MinimumVersion = "7000.0",
 #if UNITY_6000_7_OR_NEWER
             DocumentationUrl = MigrationToURPUtilities.DocumentationUrl,
-            FixerLabel = "Migrate to URP",
+            FixerLabel = "Review in Converter",
             Fixer = MigrationToURPUtilities.OpenRenderPipelineConverter
 #endif
         };

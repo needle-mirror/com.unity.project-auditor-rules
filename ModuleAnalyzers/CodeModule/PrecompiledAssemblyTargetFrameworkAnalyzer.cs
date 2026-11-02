@@ -42,7 +42,7 @@ namespace Unity.ProjectAuditorRules.CodeModuleAnalyzers
         public override IEnumerable<ReportItemBuilder> Analyze(PrecompiledAssemblyAnalysisContext context)
         {
             var targetFramework = context.TargetFramework;
-            if (string.IsNullOrEmpty(targetFramework) || IsSupportedTargetFramework(targetFramework))
+            if (string.IsNullOrEmpty(targetFramework) || targetFramework == "Unknown" || IsSupportedTargetFramework(targetFramework))
                 yield break;
 
             var assemblyName = Path.GetFileNameWithoutExtension(context.AssemblyPath);

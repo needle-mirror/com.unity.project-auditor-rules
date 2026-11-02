@@ -1,24 +1,98 @@
 [
-  "UAC2000",
-  "UAC2001",
-  "UAC2002",
-  "UAC2003",
-  "UAC2004",
-  "UAC2005",
-  "UAC2006",
-  "UAC2007",
-  "UAC2008",
-  "UAC2009",
-  "UAC2010",
-  "UAC2011",
-  "UAC2012",
-  "UAC2013",
-  "UAC2014",
-  "UAC0023",
-  "UAL0010",
-  "UAL0011",
-  "UAL0012",
-  "UAL0013",
-  "UAL0014",
-  "UAL0015"
+  {
+    "id": "UAC2000",
+    "recommendation": "Pass the initial elements to the <b>HashSet</b> constructor as an array instead of using collection initializer syntax."
+  },
+  {
+    "id": "UAC2001",
+    "recommendation": "Replace the LINQ call with a loop or with a method of the collection type, especially in frequently-updated code."
+  },
+  {
+    "id": "UAC2002",
+    "recommendation": "Check the <b>Count</b>, <b>Length</b> or <b>IsEmpty</b> property instead of calling <b>Any()</b>. If the variable is declared as <b>IEnumerable</b>, use a type that knows its length, such as an array or <b>List</b>."
+  },
+  {
+    "id": "UAC2003",
+    "recommendation": "Use <b>Array.Empty</b> instead of allocating a new empty array, or <b>[]</b> if your C# compiler supports collection expressions."
+  },
+  {
+    "id": "UAC2004",
+    "recommendation": "Index the collection directly instead of calling <b>ElementAt</b>. If the collection doesn't support indexing, use one that does, such as an array or <b>List</b>."
+  },
+  {
+    "id": "UAC2005",
+    "recommendation": "Use the <b>Count</b> or <b>Length</b> property instead of calling <b>Count()</b>. If the variable is declared as <b>IEnumerable</b>, use a type that knows its length, such as an array or <b>List</b>."
+  },
+  {
+    "id": "UAC2006",
+    "recommendation": "Use <b>Array.Exists</b> or <b>List.Exists</b> instead of <b>Any(predicate)</b>. If you look up elements often, store them in a <b>HashSet</b> or <b>Dictionary</b>."
+  },
+  {
+    "id": "UAC2007",
+    "recommendation": "Use <b>List.Contains</b> or <b>Array.IndexOf</b> instead of the LINQ <b>Contains</b>. If you search the collection often, store the elements in a <b>HashSet</b>."
+  },
+  {
+    "id": "UAC2008",
+    "recommendation": "Use <b>Array.TrueForAll</b> or <b>List.TrueForAll</b> instead of <b>All(predicate)</b>."
+  },
+  {
+    "id": "UAC2009",
+    "recommendation": "Index the last element directly, for example <b>array[^1]</b> or <b>list[list.Count - 1]</b>, instead of calling <b>Last()</b>."
+  },
+  {
+    "id": "UAC2010",
+    "recommendation": "Index the first element directly, for example <b>array[0]</b>, instead of calling <b>First()</b>."
+  },
+  {
+    "id": "UAC2011",
+    "recommendation": "Check that the collection isn't empty and index the first element directly instead of calling <b>FirstOrDefault</b>."
+  },
+  {
+    "id": "UAC2012",
+    "recommendation": "Check that the collection isn't empty and index the last element directly instead of calling <b>LastOrDefault</b>."
+  },
+  {
+    "id": "UAC2013",
+    "recommendation": "Check the index against the <b>Count</b> or <b>Length</b> property and index the element directly instead of calling <b>ElementAtOrDefault</b>."
+  },
+  {
+    "id": "UAC2014",
+    "recommendation": "For arrays whose element type implements <b>IEquatable</b>, compare them with <b>AsSpan().SequenceEqual()</b> instead."
+  },
+  {
+    "id": "UAC0023",
+    "recommendation": "Replace <b>BinaryFormatter</b> with a supported serializer such as <b>JsonUtility</b>, <b>System.Text.Json</b>, or <b>DataContractSerializer</b>, or write the data manually with <b>BinaryReader</b> and <b>BinaryWriter</b>."
+  },
+  {
+    "id": "UAC7000",
+    "recommendation": "Add the <b>readonly</b> modifier to the member, or to the <b>get</b> accessor if the property also has a setter. Without it, the compiler copies the whole struct before every call through an <b>in</b> parameter, a <b>readonly</b> field or a <b>ref readonly</b> reference. Omit the modifier only if the member is meant to modify the struct."
+  },
+  {
+    "id": "UAC7001",
+    "recommendation": "Add the <b>readonly</b> modifier to the called member if it does not modify the struct. Otherwise pass or hold the value by <b>ref</b> instead of <b>in</b> or <b>readonly</b>, or copy it into a local variable once before the calls, so the compiler does not make a hidden copy on every call."
+  },
+  {
+    "id": "UAL0010",
+    "recommendation": "Add <b>[AutoStaticsCleanup]</b> to each static field, automatic property and event that must be reset on code reload or when entering Play Mode, and declare the type and all its containing types <b>partial</b>. Add <b>[NoAutoStaticsCleanup]</b> to static members that must keep their value."
+  },
+  {
+    "id": "UAL0011",
+    "recommendation": "Follow the guidance in the issue description. Usually this means removing <b>readonly</b> from the static member so that it can be reset, or adding <b>[NoAutoStaticsCleanup]</b> to it if its value stays valid across code reload."
+  },
+  {
+    "id": "UAL0012",
+    "recommendation": "Declare the type and all its containing types <b>partial</b> so that the cleanup code can be generated."
+  },
+  {
+    "id": "UAL0013",
+    "recommendation": "Add <b>[AutoStaticsCleanup]</b> to this static member if it must be reset on code reload or when entering Play Mode, and declare the type and all its containing types <b>partial</b>. Add <b>[NoAutoStaticsCleanup]</b> if it must keep its value."
+  },
+  {
+    "id": "UAL0014",
+    "recommendation": "Remove the static constructor. Initialize static members with field initializers or in an <b>[OnCodeLoaded]</b> method instead."
+  },
+  {
+    "id": "UAL0015",
+    "recommendation": "If this is a static constructor, move the assignment to an <b>[OnCodeLoaded]</b> method. If this is an instance constructor, make sure the constructed object can't outlive the current code load scope."
+  }
 ]
